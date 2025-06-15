@@ -23,7 +23,7 @@ spec:
     remediation:
       retries: -1
   values:
-    secretRef:
+    clientInfoSecret:
       name: synology-csi-secret
       namespace: synology-csi
 
