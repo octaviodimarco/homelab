@@ -7,5 +7,5 @@ resources:
   - namespace.yaml
   - controller.yaml
   - node.yaml
-  - client-info.secret.sops.yaml
+  - client-info.secret.yaml
   - storage-class.yaml
