@@ -1,0 +1,9 @@
+# infrastructure/controllers/base/synology-csi/repository.yaml
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: synology-csi
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: https://christian-schlichtherle.github.io/synology-csi-chart/ # <-- ¡URL CORRECTA!

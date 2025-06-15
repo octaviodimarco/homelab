@@ -1,0 +1,49 @@
+# infrastructure/controllers/base/synology-csi/release.yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: synology-csi
+  namespace: synology-csi # Tu namespace deseado
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: synology-csi
+      version: "1.0.0" # <-- ¡VERSIÓN DEL CHART! (Verifica la más reciente estable)
+      sourceRef:
+        kind: HelmRepository
+        name: synology-csi
+        namespace: flux-system
+  releaseName: synology-csi
+  targetNamespace: synology-csi
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: -1
+  values:
+    secretRef:
+      name: synology-csi-secret
+      namespace: synology-csi
+
+    global:
+      synology_ip: "192.168.1.79"
+      synology_port: "5000"
+      https: false
+
+    nfs:
+      enabled: true
+    iscsi:
+      enabled: false
+
+    driver:
+      logLevel: 0
+
+    defaultStorageClass:
+      create: true
+      isDefaultClass: true
+      name: synology-csi
+
+    snapshotter:
+      enabled: true
