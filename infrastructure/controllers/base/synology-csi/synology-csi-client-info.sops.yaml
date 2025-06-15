@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-    name: synology-csi-secret
+    name: synology-csi-client-info
     # ESTO ES CRUCIAL!
     namespace: synology-csi
 data:
@@ -20,7 +20,7 @@ sops:
             dmNuVHRDTnB3dTc1R1gvTjI4S1dSa1UKsVlgLJ6yP6rpM8We5FllBvGoENXdIi0j
             3N5Cvu2YFJa4HGik8YZJj1/VITB/Dpxl1ZsKAeKpgsuNbCRCmYvlSQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-15T22:56:37Z"
-    mac: ENC[AES256_GCM,data:UnkIuKEcykK0e0z1O1xRYy8z2RutoFf9K1ryUaFVqBqhTF4Ka8lmJxCgEGcBaVQ3czLPBCOXW0R2qDTr6vTHR0MGGYed5Yedhe5kkj0i/Tim4tqpr18MFEJZXfsFf8x6w3kgQ/lAJExv1vJQq+SJO9e4MYheeANeOKRFekm1ngg=,iv:FoI0oKMfFhyyhzwbEMe7MyvCko2/F++Uhot8CsOLZC0=,tag:JfMudf3S2eCzMNmhQOMcPQ==,type:str]
+    lastmodified: "2025-06-15T23:26:34Z"
+    mac: ENC[AES256_GCM,data:opU8PcDKgajWGxl7jnYQMlyke0vVbg6N3e3Z4eO/Z5Kfv5hqWWUOIJM46NHg+iKl+YXNgMnK0hxP/Cor6c7Pmusu1EmgEwjXzdJISjXk2zFF+ksFwxzPs1pIAlVFkHoNwQxt5nK7e02LbjwHXRgWUA+WNsqNB4ppOOYq1h8StW0=,iv:Qp9JfNOPtviWOSAHpM2CwBcCguLn6wJ8CjFMXbE9sCA=,tag:1+0mNRk5tYjzEHAiY6PR7A==,type:str]
     encrypted_regex: ^(data|stringData)$
     version: 3.10.2
