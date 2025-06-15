@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: csi-controller-sa
+  namespace: synology-csi
+
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
