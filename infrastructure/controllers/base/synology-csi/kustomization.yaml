@@ -4,4 +4,4 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - synology-csi-client-info.sops.yaml
+  - synology-csi-secret.yaml

@@ -23,10 +23,6 @@ spec:
     remediation:
       retries: -1
   values:
-    clientInfoSecret:
-      name: synology-csi-client-info
-      namespace: synology-csi
-
     global:
       synology_ip: "192.168.1.79"
       synology_port: "5000"
