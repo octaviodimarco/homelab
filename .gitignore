@@ -1,0 +1,10 @@
+.DS_Store
+
+# Archivos de log
+*.log
+
+# Archivos de SOPS sin cifrar (puedes ignorar secretos en texto plano si tienes otros archivos)
+*.secret.yaml
+
+# Otros
+.env
