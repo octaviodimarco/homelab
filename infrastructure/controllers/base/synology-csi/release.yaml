@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: synology-csi
-      version: "1.0.0" # <-- ¡VERSIÓN DEL CHART! (Verifica la más reciente estable)
+      version: "0.10.1"
       sourceRef:
         kind: HelmRepository
         name: synology-csi

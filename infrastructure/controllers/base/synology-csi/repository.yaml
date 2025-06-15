@@ -6,4 +6,4 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  url: https://christian-schlichtherle.github.io/synology-csi-chart/ # <-- ¡URL CORRECTA!
+  url: https://christian-schlichtherle.github.io/synology-csi-chart/
