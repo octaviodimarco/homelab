@@ -5,3 +5,8 @@ resources:
   - repository.yaml
   - release.yaml
   - synology-csi-client-info.sops.yaml
+patches:
+  - path: patch-client-info.yaml
+    target:
+      kind: StatefulSet
+      name: synology-csi-controller
