@@ -159,7 +159,8 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
             - name: client-info
-              mountPath: /etc/synology
+              mountPath: /etc/synology/client-info.yml
+              subPath: clients
               readOnly: true
       volumes:
         - name: socket-dir
