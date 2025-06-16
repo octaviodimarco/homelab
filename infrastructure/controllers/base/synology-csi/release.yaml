@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: synology-csi
-  namespace: synology-csi # Tu namespace deseado
+  namespace: synology-csi
 spec:
   interval: 5m
   chart:
@@ -43,3 +43,29 @@ spec:
 
     snapshotter:
       enabled: true
+
+  # ¡¡¡AÑADE ESTA SECCIÓN DE PATCHES AL HELMRELEASE!!!
+  patches:
+    # Patch para el volumen del Secret client-info.yml
+    - target:
+        kind: StatefulSet
+        name: synology-csi-controller
+      patch: |
+        - op: replace # Reemplazamos la definición del item en el secret
+          path: /spec/template/spec/volumes/0/secret/items # Asumiendo que 'client-info' es el primer volumen (índice 0)
+          value:
+            - key: client-info.yml
+              path: client-info.yaml # Ahora se montará como client-info.yaml
+
+    # Patch para el volumeMount del contenedor csi-plugin
+    - target:
+        kind: StatefulSet
+        name: synology-csi-controller
+      patch: |
+        - op: replace # Reemplazamos el volumeMount completo para añadir subPath
+          path: /spec/template/spec/containers/3/volumeMounts/0 # csi-plugin es el 4to contenedor (índice 3), y client-info es su 1er volumeMount (índice 0)
+          value:
+            name: client-info
+            mountPath: /etc/synology/
+            readOnly: true
+            subPath: client-info.yaml # Montamos el archivo directamente aquí

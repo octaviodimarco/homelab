@@ -10,8 +10,3 @@ patches:
       kind: Deployment
       name: kustomize-controller
       namespace: flux-system
-  - path: synology-csi-controller-patch-mount.yaml # <-- ¡AÑADE ESTE NUEVO PATCH!
-    target:
-      kind: StatefulSet
-      name: synology-csi-controller
-      namespace: synology-csi # ¡Importante: el namespace donde está el StatefulSet!
