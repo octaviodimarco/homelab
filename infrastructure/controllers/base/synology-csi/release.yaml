@@ -39,20 +39,18 @@ spec:
       isDefaultClass: true
       name: synology-csi
     controller:
-      volumeMounts:
-        - name: client-info
-          mountPath: /etc/synology/client-info.yaml
-          subPath: client-info.yml
       volumes:
         - name: client-info
           secret:
             secretName: synology-csi-client-info
+      volumeMounts:
+        - name: client-info
+          mountPath: /etc/synology
     csiPlugin:
-      volumeMounts:
-        - name: client-info
-          mountPath: /etc/synology/client-info.yaml
-          subPath: client-info.yml
       volumes:
         - name: client-info
           secret:
             secretName: synology-csi-client-info
+      volumeMounts:
+        - name: client-info
+          mountPath: /etc/synology
