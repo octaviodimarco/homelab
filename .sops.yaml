@@ -1,20 +1,6 @@
+---
 creation_rules:
-  - path_regex: ^infrastructure/controllers/base/secrets/client-info-secret(\.sops)?\.yaml$
-    encrypted_regex: "^(data|stringData)$"
-    key_groups:
-      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
-
-  - path_regex: .*\.sops\.yaml$
-    encrypted_regex: "^(data|stringData)$"
-    key_groups:
-      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
-
-  - path_regex: .*\/(talsecret)(\.sops)?\.yaml
-    encrypted_regex: "^(username|password|id|secret|bootstraptoken|secretboxencryptionsecret|token|ca|crt|key)$"
-    key_groups:
-      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
-
   - path_regex: .*\.secret(\.sops)?\.yaml
     encrypted_regex: "^(data|stringData)$"
     key_groups:
-      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
+      - age: ["age1pwdq0qxfnk5m2vgyhaqw4ya3clhjnf5s5y9khfluqsgtn04jmd4qxs0uky"]
