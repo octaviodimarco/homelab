@@ -8,17 +8,11 @@ spec:
     spec:
       containers:
         - name: manager
-          env:
-            - name: SOPS_AGE_KEY_FILE # Variable de entorno que SOPS usará para encontrar la clave
-              value: /var/sops/age/key.txt # Ruta donde montaremos el archivo de la clave
           volumeMounts:
-            - name: sops-age-key-volume # Nombre del volumen
-              mountPath: /var/sops/age # Directorio donde se montará el Secret
+            - mountPath: /etc/age/key.txt
+              name: age-key
               readOnly: true
       volumes:
-        - name: sops-age-key-volume # Nombre del volumen (debe coincidir con volumeMounts)
+        - name: age-key
           secret:
-            secretName: sops-age-key # El Secret de Kubernetes que contiene tu clave Age
-            items:
-              - key: age.key # La clave dentro del Secret que contiene tu clave privada Age
-                path: key.txt # El nombre del archivo dentro del volumen montado
+            secretName: sops-age-key
