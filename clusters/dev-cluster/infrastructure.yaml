@@ -12,7 +12,3 @@ spec:
     name: flux-system
   path: ./infrastructure/controllers/base
   prune: true
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age-key # Ensure this matches the Secret name in flux-system namespace

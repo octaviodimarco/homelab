@@ -6,8 +6,8 @@ metadata:
   #   storageclass.kubernetes.io/is-default-class: "true"
 provisioner: csi.san.synology.com
 parameters:
-  dsm: '192.168.1.79'
-  location: '/volume1'
+  dsm: "192.168.1.79"
+  location: "/volume1"
   protocol: iscsi
 reclaimPolicy: Delete
 allowVolumeExpansion: true
