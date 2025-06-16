@@ -1,20 +1,20 @@
----
 creation_rules:
-  # Regla genérica para todos los archivos .sops.yaml
-  # Los archivos de secreto deberían siempre terminar en .sops.yaml para esta regla.
-  - path_regex: .*\.sops\.yaml$
-    encrypted_regex: "^(data|stringData)$" # Encrypta solo las secciones de datos sensibles
+  - path_regex: ^infrastructure/controllers/base/secrets/client-info-secret(\.sops)?\.yaml$
+    encrypted_regex: "^(data|stringData)$"
     key_groups:
-      - age: ["age1y827m2r4ydam7xw0wv4s4tpjv63fwk0rnauzffdtt63pj4734c9q5w5g2j"] # ¡TU CLAVE PÚBLICA!
+      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
 
-  # Tus reglas existentes (Talhelper files)
+  - path_regex: .*\.sops\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
+
   - path_regex: .*\/(talsecret)(\.sops)?\.yaml
     encrypted_regex: "^(username|password|id|secret|bootstraptoken|secretboxencryptionsecret|token|ca|crt|key)$"
     key_groups:
-      - age: ["age1y827m2r4ydam7xw0wv4s4tpjv63fwk0rnauzffdtt63pj4734c9q5w5g2j"]
+      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
 
-  # Tus reglas existentes (Generic Kubernetes Secrets)
   - path_regex: .*\.secret(\.sops)?\.yaml
-    encrypted_regex: "^(data|stringData)$" # Encrypta solo las secciones de datos sensibles
+    encrypted_regex: "^(data|stringData)$"
     key_groups:
-      - age: ["age1y827m2r4ydam7xw0wv4s4tpjv63fwk0rnauzffdtt63pj4734c9q5w5g2j"] # ¡TU CLAVE PÚBLICA!
+      - age: ["age1vy32958dn82naq7nw280x7v74tpgca66wgum5tac39cad47gddrqrh4qz8"]
