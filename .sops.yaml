@@ -15,6 +15,6 @@ creation_rules:
 
   # Tus reglas existentes (Generic Kubernetes Secrets)
   - path_regex: .*\.secret(\.sops)?\.yaml
-    # encrypted_regex: "^(data|stringData|username|password)$" # Puedes descomentar esto si lo necesitas
+    encrypted_regex: "^(data|stringData)$" # Encrypta solo las secciones de datos sensibles
     key_groups:
-      - age: ["age1y827m2r4ydam7xw0wv4s4tpjv63fwk0rnauzffdtt63pj4734c9q5w5g2j"]
+      - age: ["age1y827m2r4ydam7xw0wv4s4tpjv63fwk0rnauzffdtt63pj4734c9q5w5g2j"] # ¡TU CLAVE PÚBLICA!

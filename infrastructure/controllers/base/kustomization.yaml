@@ -1,2 +1,3 @@
 resources:
   - synology-csi/
+  - secrets/
