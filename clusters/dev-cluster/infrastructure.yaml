@@ -12,24 +12,7 @@ spec:
     name: flux-system
   path: ./infrastructure/controllers/base
   prune: true
-  decryption: # <-- ¡AÑADE ESTA SECCIÓN AQUÍ!
+  decryption:
     provider: sops
     secretRef:
-      name: sops-age-key # Debe coincidir con el nombre del Secret que aplicaste manualmente
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: infra-configs
-#   namespace: flux-system
-# spec:
-#   dependsOn:
-#     - name: infra-controllers
-#   interval: 1h
-#   retryInterval: 1m
-#   timeout: 5m
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#   path: ./infrastructure/configs/base
-#   prune: true
+      name: sops-age-key # Ensure this matches the Secret name in flux-system namespace
