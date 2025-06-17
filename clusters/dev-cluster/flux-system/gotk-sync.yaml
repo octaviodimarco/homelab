@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: feature/synology-csi
+    branch: main
   secretRef:
     name: flux-system
   url: https://github.com/octaviodimarco/homelab.git
