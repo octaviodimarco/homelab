@@ -6,4 +6,4 @@ resources:
   - node.yml
   - csi-driver.yml
   - storage-class.yml
-  - secrets/
+  - secrets/client-info-external-secret.yaml
