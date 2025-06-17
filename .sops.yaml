@@ -1,6 +1,0 @@
----
-creation_rules:
-  - path_regex: .*\.secret(\.sops)?\.yaml
-    encrypted_regex: "^(data|stringData)$"
-    key_groups:
-      - age: ["age1pwdq0qxfnk5m2vgyhaqw4ya3clhjnf5s5y9khfluqsgtn04jmd4qxs0uky"]
