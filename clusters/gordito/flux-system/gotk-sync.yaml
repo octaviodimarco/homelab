@@ -20,7 +20,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./clusters/dev-cluster
+  path: ./clusters/gordito
   prune: true
   sourceRef:
     kind: GitRepository
