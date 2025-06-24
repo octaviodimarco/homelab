@@ -16,15 +16,14 @@ spec:
     spec:
       containers:
         - name: linkding
-          image: sissbruecker/linkding:1.40.0
+          image: sissbruecker/linkding:1.41.0
           ports:
             - containerPort: 9090
           volumeMounts:
-            - name: linkding-data
+            - name: data
               mountPath: /etc/linkding/data
       restartPolicy: Always
-
       volumes:
-        - name: linkding-data
+        - name: data
           persistentVolumeClaim:
             claimName: linkding-data
