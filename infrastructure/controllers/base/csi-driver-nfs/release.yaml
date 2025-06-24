@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: csi-driver-nfs
+  namespace: flux-system
+spec:
+  releaseName: csi-driver-nfs
+  targetNamespace: csi-driver-nfs
+  interval: 10m
+  chart:
+    spec:
+      chart: charts/latest/csi-driver-nfs
+      sourceRef:
+        kind: GitRepository
+        name: csi-driver-nfs
+        namespace: flux-system
+      interval: 1m
+  values:
+    installCRDs: true
+  install:
+    createNamespace: true
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
