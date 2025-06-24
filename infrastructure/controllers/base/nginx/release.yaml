@@ -1,0 +1,20 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: nginx-ingress
+  namespace: ingress-nginx # namespace donde vas a instalar
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ingress-nginx
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+      version: "4.12.3" # o la versión que quieras usar
+  values:
+    controller:
+      replicaCount: 1
+      service:
+        type: LoadBalancer
