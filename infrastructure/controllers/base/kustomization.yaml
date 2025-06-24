@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - external-secrets/
-  - synology-csi/
+  # - external-secrets/
+  # - synology-csi/
   - csi-driver-nfs/
