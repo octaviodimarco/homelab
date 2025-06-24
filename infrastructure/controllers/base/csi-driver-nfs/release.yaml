@@ -9,7 +9,7 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: charts
+      chart: charts/latest/csi-driver-nfs
       sourceRef:
         kind: GitRepository
         name: csi-driver-nfs
