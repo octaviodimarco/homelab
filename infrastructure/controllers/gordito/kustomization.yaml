@@ -4,3 +4,4 @@ resources:
   - csi-driver-nfs
   - external-secrets
   - cert-manager
+  - metallb
