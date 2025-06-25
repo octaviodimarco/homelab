@@ -8,4 +8,4 @@ env:
     valueFrom:
       secretKeyRef:
         name: cloudflare-dns-api-token
-        key: cloudflare-dns-api-token
+        key: cloudflare-api-token-secret
