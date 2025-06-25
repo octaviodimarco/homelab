@@ -4,3 +4,4 @@ resources:
   - cloudnativepg
   - external-secrets
   - csi-driver-nfs
+  - metallb
