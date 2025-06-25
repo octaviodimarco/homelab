@@ -6,3 +6,4 @@ resources:
   - cert-manager
   - metallb
   - nginx
+  - external-dns
