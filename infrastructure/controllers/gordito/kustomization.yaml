@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - csi-driver-nfs
+  - external-secrets
+  - cert-manager
+  - metallb
+  - nginx
+  - external-dns
