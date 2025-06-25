@@ -16,3 +16,19 @@ spec:
       owner: linkding
       secret:
         name: linkding-db-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkding-db-lb
+  namespace: linkding
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: linkding-db
+    cnpg.io/role: primary
