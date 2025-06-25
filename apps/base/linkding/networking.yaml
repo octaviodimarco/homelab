@@ -1,11 +1,15 @@
-apiVersion: v1
-kind: Service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: linkding
+  name: linkding-ingress
+  namespace: linkding
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
-  selector:
-    app: linkding
-  ports:
-    - protocol: TCP
-      port: 9090
-      targetPort: 9090
+  ingressClassName: nginx
+  rules:
+    - host: "linkding.dimarco-server.site"
+  tls:
+    - hosts:
+        - "linkding.dimarco-server.site"
+      secretName: linkding-tls
