@@ -5,3 +5,4 @@ resources:
   - external-secrets
   - cert-manager
   - metallb
+  - nginx
