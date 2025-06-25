@@ -4,3 +4,4 @@ resources:
   - namespace.yaml
   - repositories.yaml
   - release.yaml
+  - deployment-crds.yaml
