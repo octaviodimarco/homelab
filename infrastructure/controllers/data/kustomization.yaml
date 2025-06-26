@@ -1,4 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - l2-advertisement.yaml
+  - cloudnativepg
+  - external-secrets
+  - csi-driver-nfs
+  - metallb

@@ -1,0 +1,34 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: linkding-db
+  namespace: linkding
+spec:
+  description: "PostgreSQL cluster for Linkding"
+  instances: 1
+  storage:
+    size: 2Gi
+    storageClass: nfs-csi-data
+
+  bootstrap:
+    initdb:
+      database: linkding
+      owner: linkding
+      secret:
+        name: linkding-db-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkding-db-lb
+  namespace: linkding
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: linkding-db
+    cnpg.io/instanceRole: primary
