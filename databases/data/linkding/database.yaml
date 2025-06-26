@@ -22,6 +22,8 @@ kind: Service
 metadata:
   name: linkding-db-lb
   namespace: linkding
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: pg-linkding.data.dimarco-server.site
 spec:
   type: LoadBalancer
   ports:
