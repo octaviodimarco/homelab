@@ -14,8 +14,8 @@ spec:
       labels:
         app: linkding
     spec:
-      securityContext:
-        fsGroup: 1000
+      # securityContext:
+      #   fsGroup: 1000
       containers:
         - name: linkding
           image: sissbruecker/linkding:1.41.0
