@@ -9,7 +9,6 @@ patches:
   - target:
       kind: ExternalSecret
       name: linkding-db-credentials
-      namespace: linkding
     patch: |-
       - op: replace
         path: /spec/dataFrom/0/find/path
