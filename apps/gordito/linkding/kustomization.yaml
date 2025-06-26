@@ -12,4 +12,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/dataFrom/0/find/path
-        value: /databases/linkding/
+        value: /databases/linkding
