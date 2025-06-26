@@ -18,7 +18,7 @@ metadata:
   name: linkding-ingress
   namespace: linkding
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
 spec:
   ingressClassName: nginx
   rules:
