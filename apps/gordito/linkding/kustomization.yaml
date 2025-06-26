@@ -3,11 +3,5 @@ kind: Kustomization
 namespace: linkding
 resources:
   - configmap.yaml
+  - secret.yaml
   - ../../base/linkding/
-
-patches:
-  - target:
-      kind: ExternalSecret
-      name: linkding-db-credentials
-      namespace: linkding
-    path: patch-external-secret.yaml
