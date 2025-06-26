@@ -4,4 +4,4 @@ namespace: linkding
 resources:
   - ../../base/linkding/
   - configmap.yaml
-  - secrets.yaml
+  - secret.yaml
