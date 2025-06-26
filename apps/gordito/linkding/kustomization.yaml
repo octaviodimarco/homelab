@@ -2,4 +2,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: linkding
 resources:
+  - configmap.yaml
   - ../../base/linkding/
+
+patches:
+  - target:
+      kind: ExternalSecret
+      name: linkding-db-credentials
+    patch: |-
+      - op: replace
+        path: /spec/dataFrom/0/find/path
+        value: /databases/linkding/

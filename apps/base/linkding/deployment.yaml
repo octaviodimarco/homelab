@@ -24,6 +24,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /etc/linkding/data
+          envFrom:
+            - configMapRef:
+                name: linkding-config-postgres
+            - secretRef:
+                name: linkding-db-secret
       restartPolicy: Always
       volumes:
         - name: data
