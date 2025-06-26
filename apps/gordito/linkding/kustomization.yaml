@@ -5,5 +5,9 @@ resources:
   - configmap.yaml
   - ../../base/linkding/
 
-patchesStrategicMerge:
-  - patch-external-secret.yaml
+patches:
+  - target:
+      kind: ExternalSecret
+      name: linkding-db-credentials
+      namespace: linkding
+    path: patch-external-secret.yaml
