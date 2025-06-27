@@ -7,4 +7,4 @@ data:
   LD_DB_ENGINE: "postgresql"
   LD_DB_HOST: "pg-linkding.data.dimarco-server.site"
   LD_DB_PORT: "5432"
-  LD_DB_NAME: "linkding"
+  LD_DB_DATABASE: "linkding"
