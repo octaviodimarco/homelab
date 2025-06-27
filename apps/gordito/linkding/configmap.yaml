@@ -4,8 +4,7 @@ metadata:
   name: linkding-config-postgres
   namespace: linkding
 data:
-  LD_DB_ENGINE: "postgresql"
-  LD_DB_HOST: "pg-linkding.data.dimarco-server.site"
+  LD_DB_ENGINE: postgres
+  LD_DB_HOST: pg-linkding.data.dimarco-server.site
   LD_DB_PORT: "5432"
-  LD_DB_DATABASE: "linkding"
-  LD_DB_OPTIONS: '{"sslmode": "prefer"}'
+  LD_DB_DATABASE: linkding
