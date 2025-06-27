@@ -21,7 +21,7 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: config
-              mountPath: /ddns-updater/config.json
+              mountPath: /updater/data/config.json
               subPath: config.json
           envFrom:
             - secretRef:
