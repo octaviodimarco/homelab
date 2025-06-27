@@ -19,15 +19,15 @@ spec:
           image: qmcgaw/ddns-updater:v2
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: config
-              mountPath: /updater/data/config.json
-              subPath: config.json
+          # volumeMounts:
+          #   - name: config
+          #     mountPath: /updater/data/config.json
+          #     subPath: config.json
           envFrom:
             - secretRef:
                 name: ddns-updater-secret
       restartPolicy: Always
-      volumes:
-        - name: config
-          configMap:
-            name: ddns-updater-config
+      # volumes:
+      #   - name: config
+      #     configMap:
+      #       name: ddns-updater-config

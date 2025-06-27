@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: ddns-updater
 resources:
   - ../../base/ddns-updater/
-  - configmap.yaml
   - secret.yaml
