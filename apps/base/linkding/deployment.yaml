@@ -21,16 +21,15 @@ spec:
           image: sissbruecker/linkding:1.39.1
           ports:
             - containerPort: 9090
-          # volumeMounts:
-          #   - name: data
-          #     mountPath: /etc/linkding/data
+          volumeMounts:
+            - name: data
+              mountPath: /etc/linkding/data
           envFrom:
             - configMapRef:
                 name: linkding-config-postgres
             - secretRef:
                 name: linkding-db-secret
       restartPolicy: Always
-      # volumes:
-      #   - name: data
-      #     persistentVolumeClaim:
-      #       claimName: linkding-data
+      volumes:
+        - name: data
+          emptyDir: {}
