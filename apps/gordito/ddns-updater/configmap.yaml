@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ddns-updater-config
+  namespace: ddns-updater
+data:
+  config.json: |
+    {
+      "settings": [
+        {
+          "provider": "cloudflare",
+          "domain": "dimarco-server.site",
+          "host": "@",
+          "ip_version": "ipv4"
+        }
+      ]
+    }

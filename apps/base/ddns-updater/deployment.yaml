@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddns-updater
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ddns-updater
+  template:
+    metadata:
+      labels:
+        app: ddns-updater
+    spec:
+      # securityContext:
+      #   fsGroup: 1000
+      containers:
+        - name: ddns-updater
+          image: qmcgaw/ddns-updater:v2
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /ddns-updater/config.json
+              subPath: config.json
+          envFrom:
+            - secretRef:
+                name: ddns-updater-secret
+      restartPolicy: Always
+      volumes:
+        - name: config
+          configMap:
+            name: ddns-updater-config
