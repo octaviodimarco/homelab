@@ -13,7 +13,8 @@ data:
           "zone_identifier": "78b7dbb36e52a128d82358314dc3f92a",
           "host": "@",
           "ip_version": "ipv4",
-          "ipv6_suffix": ""
+          "ipv6_suffix": "",
+          "ttl": 600
         }
       ]
     }
