@@ -5,11 +5,18 @@ resources:
   - ../../base/grafana/
 
 patches:
-  - path: patch-networking.yaml
-    target:
-      kind: Ingress
-      name: grafana-ingress
+  # - path: patch-networking.yaml
+  #   target:
+  #     kind: Ingress
+  #     name: grafana-ingress
   - path: patch-external-secret.yaml
     target:
       kind: ExternalSecret
       name: grafana-admin-credentials
+patchesJson6902:
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: grafana-ingress
+    path: grafana/patch-networking.yaml

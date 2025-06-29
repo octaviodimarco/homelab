@@ -1,13 +1,11 @@
-# Este parche sobrescribe el host y el issuer en el Ingress base
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: grafana-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-production"
-spec:
-  rules:
-    - host: "grafana.dimarco-server.site"
-  tls:
-    - hosts:
-        - "grafana.dimarco-server.site"
+- op: replace
+  path: /spec/rules/0/host
+  value: "grafana.dimarco-server.site"
+
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: "grafana.dimarco-server.site"
+
+- op: replace
+  path: /metadata/annotations/cert-manager.io~1cluster-issuer
+  value: "letsencrypt-production"
