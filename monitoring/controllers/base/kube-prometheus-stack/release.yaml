@@ -28,7 +28,7 @@ spec:
     grafana:
       enabled: true
       admin:
-        existingSecret: grafana-admin-credentials
+        existingSecret: grafana-admin-secret
       persistence:
         enabled: true
         storageClassName: nfs-csi
