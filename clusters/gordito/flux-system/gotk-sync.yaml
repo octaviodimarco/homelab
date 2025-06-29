@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: feature/ddns-updater
+    branch: feature/jellyfin
   secretRef:
     name: flux-system
   url: https://github.com/octaviodimarco/homelab.git
