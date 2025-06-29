@@ -5,3 +5,4 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
     app.kubernetes.io/component: monitoring
+    k8s.dimarco-server.site/scrape: "true"
