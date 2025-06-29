@@ -11,7 +11,7 @@ spec:
     - ReadWriteMany
   nfs:
     server: 192.168.1.79
-    path: "/volume1/Media"
+    path: "/volume1/Proxmox/Media"
     readOnly: false
 ---
 apiVersion: v1
