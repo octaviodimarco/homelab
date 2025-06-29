@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+        - name: jellyfin
+          image: jellyfin/jellyfin:2025062305
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 8096
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media
+            - name: device-dri
+              mountPath: /dev/dri
+          # --- SECCIÓN OPCIONAL PARA TRANSCODIFICACIÓN POR HARDWARE (Intel QSV) ---
+          # Si tu CPU soporta Intel Quick Sync, esto mejora el rendimiento drásticamente.
+          # Descomenta las siguientes líneas si quieres probarlo.
+          # securityContext:
+          #   privileged: true # Necesario para acceder al dispositivo de hardware
+          # volumeMounts:
+          #   - name: device-dri
+          #     mountPath: /dev/dri
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyfin-config-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: jellyfin-media-pvc
+        - name: device-dri
+          hostPath:
+            path: /dev/dri
+        # --- SECCIÓN OPCIONAL PARA TRANSCODIFICACIÓN POR HARDWARE ---
+        # - name: device-dri
+        #   hostPath:
+        #     path: /dev/dri
