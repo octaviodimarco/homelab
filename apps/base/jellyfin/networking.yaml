@@ -16,7 +16,7 @@ metadata:
   name: jellyfin-ingress
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
-    external-dns.alpha.kubernetes.io/ignore: "true"
+    external-dns.kubernetes.io/ignore: "true"
     # Anotación importante para NGINX para permitir archivos grandes (streaming)
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
