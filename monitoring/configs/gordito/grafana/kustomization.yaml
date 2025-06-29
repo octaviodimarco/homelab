@@ -19,4 +19,4 @@ patchesJson6902:
       version: v1
       kind: Ingress
       name: grafana-ingress
-    path: grafana/patch-networking.yaml
+    path: patch-networking.yaml
