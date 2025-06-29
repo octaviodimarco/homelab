@@ -1,7 +1,12 @@
 provider:
   name: cloudflare
 
-policy: upsert-only
+policy: sync
+logLevel: info
+domainFilters:
+  - "dimarco-server.site"
+extraArgs:
+  - --annotation-filter=external-dns.kubernetes.io/managed=true
 
 env:
   - name: CF_API_TOKEN
