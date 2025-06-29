@@ -11,8 +11,8 @@ spec:
       version: "58.1.0"
       sourceRef:
         kind: HelmRepository
-        name: prometheus-community
-        namespace: flux-system
+        name: kube-prometheus-stack
+        namespace: monitoring
       interval: 12h
   install:
     crds: Create
