@@ -8,6 +8,7 @@ spec:
     app.kubernetes.io/name: grafana
   ports:
     - name: http
+      protocol: TCP
       port: 80
       targetPort: 3000
 
@@ -20,7 +21,6 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-staging"
     # Añadimos ambas versiones de la anotación 'ignore' por compatibilidad
     external-dns.alpha.kubernetes.io/ignore: "true"
-    external-dns.kubernetes.io/ignore: "true"
 spec:
   ingressClassName: nginx
   rules:
