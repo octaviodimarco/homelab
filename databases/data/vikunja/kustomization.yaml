@@ -1,5 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: vikunja
 resources:
-  - linkding
-  - vikunja
+  - namespace.yaml
+  - secrets.yaml
+  - database.yaml
