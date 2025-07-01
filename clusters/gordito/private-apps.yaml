@@ -7,7 +7,7 @@ spec:
   dependsOn:
     - name: apps
   interval: 10m
-  path: ./apps/gordito
+  path: ./apps/gordito/
   prune: true
   sourceRef:
     kind: GitRepository
