@@ -7,7 +7,7 @@ spec:
   interval: 5m
   url: ssh://git@github.com/octaviodimarco/homelab-private.git
   ref:
-    branch: main
+    branch: feature/vikunja
   secretRef:
     name: private-repo-deploy-key
   recurseSubmodules: true
