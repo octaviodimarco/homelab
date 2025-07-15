@@ -1,0 +1,36 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: sparky-db
+  namespace: sparky
+spec:
+  description: "PostgreSQL cluster for Sparky"
+  instances: 1
+  storage:
+    size: 2Gi
+    storageClass: nfs-csi-data
+
+  bootstrap:
+    initdb:
+      database: sparkyfitness
+      owner: sparky
+      secret:
+        name: sparky-db-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sparky-db-lb
+  namespace: sparky
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: pg-sparky.data.dimarco-server.site
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: sparky-db
+    cnpg.io/instanceRole: primary
