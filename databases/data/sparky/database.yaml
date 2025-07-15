@@ -16,6 +16,10 @@ spec:
       owner: sparky
       secret:
         name: sparky-db-credentials
+
+  postgresql:
+    parameters:
+      shared_preload_libraries: "pg_stat_statements"
 ---
 apiVersion: v1
 kind: Service
