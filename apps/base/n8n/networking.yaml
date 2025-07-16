@@ -5,6 +5,7 @@ metadata:
 spec:
   ports:
     - port: 5678
+      name: http
   selector:
     app: n8n
   type: ClusterIP
