@@ -1,29 +1,29 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: n8n-db
-  namespace: n8n
+  name: vikunja-db
+  namespace: vikunja
 spec:
-  description: "PostgreSQL cluster for n8n"
+  description: "PostgreSQL cluster for vikunja"
   instances: 1
   storage:
-    size: 2Gi
+    size: 5Gi
     storageClass: nfs-csi-data
 
   bootstrap:
     initdb:
-      database: n8n
-      owner: n8n
+      database: vikunja
+      owner: vikunja
       secret:
-        name: n8n-db-credentials
+        name: vikunja-db-credentials
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: n8n-db-lb
-  namespace: n8n
+  name: vikunja-db-lb
+  namespace: vikunja
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: pg-n8n.data.dimarco-server.site
+    external-dns.alpha.kubernetes.io/hostname: pg-vikunja.data.dimarco-server.site
 spec:
   type: LoadBalancer
   ports:
@@ -32,5 +32,5 @@ spec:
       protocol: TCP
       targetPort: 5432
   selector:
-    cnpg.io/cluster: n8n-db
+    cnpg.io/cluster: vikunja-db
     cnpg.io/instanceRole: primary
