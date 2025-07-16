@@ -8,3 +8,30 @@ spec:
   selector:
     app: n8n
   type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-ingress
+  namespace: n8n
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    external-dns.alpha.kubernetes.io/ignore: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "n8n.dimarco-server.site"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: n8n
+                port:
+                  name: 5678
+  tls:
+    - hosts:
+        - "n8n.dimarco-server.site"
+      secretName: n8n-tls

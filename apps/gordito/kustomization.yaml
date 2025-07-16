@@ -4,3 +4,4 @@ resources:
   - linkding
   - ddns-updater
   - jellyfin
+  - n8n
