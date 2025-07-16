@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: feature/private-apps
+    branch: feature/n8n
   secretRef:
     name: flux-system
   url: https://github.com/octaviodimarco/homelab.git
