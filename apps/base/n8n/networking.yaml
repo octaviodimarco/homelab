@@ -31,7 +31,7 @@ spec:
               service:
                 name: n8n
                 port:
-                  name: 5678
+                  name: http
   tls:
     - hosts:
         - "n8n.dimarco-server.site"
