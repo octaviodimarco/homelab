@@ -34,4 +34,4 @@ spec:
       targetPort: 5432
   selector:
     cnpg.io/cluster: n8n-db
-    cnpg.io/role: primary
+    cnpg.io/instanceRole: primary
