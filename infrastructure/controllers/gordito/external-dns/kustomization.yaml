@@ -2,3 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base/external-dns
+
+patches:
+  - path: patch-owner-id.yaml
+    target:
+      kind: ConfigMap
+      name: external-dns-values
