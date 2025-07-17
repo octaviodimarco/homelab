@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: external-dns-values
+data:
+  values.yaml: |
+    provider: cloudflare
+    policy: sync
+    logLevel: info
+    domainFilters:
+      - "dimarco-server.site"
+    extraArgs:
+      - --annotation-filter=external-dns.kubernetes.io/managed=true
+    txtOwnerId: "k8s-data-cluster"
+    env:
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-api-token-secret
+            key: CLOUDFLARE_API_TOKEN

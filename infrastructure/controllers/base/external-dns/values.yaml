@@ -8,7 +8,6 @@ domainFilters:
 extraArgs:
   - --annotation-filter=external-dns.kubernetes.io/managed=true
 registry: "txt"
-txtOwnerId: "k8s-data-cluster"
 env:
   - name: CF_API_TOKEN
     valueFrom:
