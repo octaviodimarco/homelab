@@ -23,6 +23,7 @@ metadata:
   name: n8n-db-lb
   namespace: n8n
   annotations:
+    external-dns.kubernetes.io/managed: "true"
     external-dns.alpha.kubernetes.io/hostname: pg-n8n.data.dimarco-server.site
 spec:
   type: LoadBalancer
@@ -33,4 +34,4 @@ spec:
       targetPort: 5432
   selector:
     cnpg.io/cluster: n8n-db
-    cnpg.io/instanceRole: primary
+    cnpg.io/role: primary
