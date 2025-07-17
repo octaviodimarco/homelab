@@ -1,0 +1,37 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: vaultwarden-db
+  namespace: vaultwarden
+spec:
+  description: "PostgreSQL cluster for vaultwarden"
+  instances: 1
+  storage:
+    size: 2Gi
+    storageClass: nfs-csi-data
+
+  bootstrap:
+    initdb:
+      database: vaultwarden
+      owner: vaultwarden
+      secret:
+        name: vaultwarden-db-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaultwarden-db-lb
+  namespace: vaultwarden
+  annotations:
+    external-dns.kubernetes.io/managed: "true"
+    external-dns.alpha.kubernetes.io/hostname: pg-vaultwarden.data.dimarco-server.site
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: vaultwarden-db
+    cnpg.io/instanceRole: primary
