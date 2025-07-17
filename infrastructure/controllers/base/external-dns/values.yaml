@@ -7,7 +7,7 @@ domainFilters:
   - "dimarco-server.site"
 extraArgs:
   - --annotation-filter=external-dns.kubernetes.io/managed=true
-
+registry: "txt"
 env:
   - name: CF_API_TOKEN
     valueFrom:

@@ -19,7 +19,7 @@ metadata:
   namespace: linkding
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
-    external-dns.alpha.kubernetes.io/ignore: "true"
+    external-dns.kubernetes.io/ignore: "true"
 spec:
   ingressClassName: nginx
   rules:

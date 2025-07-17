@@ -5,6 +5,9 @@ metadata:
 spec:
   ports:
     - port: 5678
+      targetPort: 5678
+      name: http
+      protocol: TCP
   selector:
     app: n8n
   type: ClusterIP
@@ -17,7 +20,7 @@ metadata:
   namespace: n8n
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
-    external-dns.alpha.kubernetes.io/ignore: "true"
+    external-dns.kubernetes.io/ignore: "true"
 spec:
   ingressClassName: nginx
   rules:
@@ -30,7 +33,7 @@ spec:
               service:
                 name: n8n
                 port:
-                  name: 5678
+                  name: http
   tls:
     - hosts:
         - "n8n.dimarco-server.site"
