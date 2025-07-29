@@ -18,6 +18,9 @@ spec:
         name: sparky-db-credentials
   monitoring:
     enablePodMonitor: true
+  postgresql:
+    parameters:
+      shared_preload_libraries: "pg_stat_statements"
 ---
 apiVersion: v1
 kind: Service
