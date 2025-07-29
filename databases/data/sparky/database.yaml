@@ -25,6 +25,7 @@ metadata:
   name: sparky-db-lb
   namespace: sparky
   annotations:
+    external-dns.kubernetes.io/managed: "true"
     external-dns.alpha.kubernetes.io/hostname: pg-sparky.data.dimarco-server.site
 spec:
   type: LoadBalancer
