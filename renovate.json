@@ -1,16 +1,41 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", ":flux"],
+  "extends": ["config:base"],
+  "includePaths": [
+    "apps/**",
+    "infrastructure/**",
+    "monitoring/**",
+    "databases/**",
+    "clusters/**"
+  ],
+  "enabledManagers": ["flux", "kubernetes", "regex"],
   "kubernetes": {
-    "fileMatch": ["\\.yaml$"]
+    "fileMatch": ["\\.ya?ml$"]
+  },
+  "flux": {
+    "fileMatch": ["\\.ya?ml$"]
   },
   "regexManagers": [
     {
-      "fileMatch": ["\\.yaml$"],
+      "fileMatch": ["\\.ya?ml$"],
       "matchStrings": [
-        "image: (?<depName>.*?):(?<currentValue>.*?)(@(?<digest>sha256:[a-f0-9]{64}))?\\s"
+        "(image|repository):\\s*(?<depName>[^/\\s:]+)/(?<packageName>[^:\\s/]+):(?<currentValue>[^\\s@]+)(?:@(?<digest>sha256:[a-f0-9]{64}))?\\s"
       ],
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "{{depName}}/{{packageName}}"
+    },
+    {
+      "fileMatch": ["\\.ya?ml$"],
+      "matchStrings": [
+        "chart:\\s*(?<depName>[^\\s:]+)/(?<packageName>[^\\s:]+)[\\s\\n]+version:\\s*(?<currentValue>[^\\s@]+)"
+      ],
+      "datasourceTemplate": "helm"
+    }
+  ],
+  "hostRules": [
+    {
+      "matchHost": "index.docker.io",
+      "token": "{{ secrets.MEND_DOCKER_HUB_TOKEN }}"
     }
   ],
   "packageRules": [
