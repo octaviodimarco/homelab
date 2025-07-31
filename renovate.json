@@ -1,10 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:base", ":flux"],
   "kubernetes": {
-    "fileMatch": ["\\.yaml$"]
-  },
-  "helm-releases": {
     "fileMatch": ["\\.yaml$"]
   },
   "regexManagers": [
@@ -23,9 +20,9 @@
       "automergeType": "pr"
     },
     {
-      "description": "Agrupar todas las actualizaciones de Helm",
-      "matchManagers": ["helm-releases"],
-      "groupName": "Flux HelmReleases"
+      "description": "Agrupar todas las actualizaciones de Flux (HelmRelease, GitRepository)",
+      "matchManagers": ["flux"],
+      "groupName": "Flux Sources and Releases"
     },
     {
       "description": "Agrupar todas las actualizaciones de imágenes Docker",
