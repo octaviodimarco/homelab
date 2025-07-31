@@ -5,8 +5,7 @@
     "apps/**",
     "infrastructure/**",
     "monitoring/**",
-    "databases/**",
-    "clusters/**"
+    "databases/**"
   ],
   "enabledManagers": ["flux", "kubernetes", "regex"],
   "kubernetes": {
