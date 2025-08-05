@@ -18,10 +18,16 @@
     {
       "fileMatch": ["\\.ya?ml$"],
       "matchStrings": [
-        "(image|repository):\\s*(?<depName>[^/\\s:]+)/(?<packageName>[^:\\s/]+):(?<currentValue>[^\\s@]+)(?:@(?<digest>sha256:[a-f0-9]{64}))?\\s"
+        "(image|repository):\\s*(?<depName>[^:@\\s]+):(?<currentValue>[^\\s@]+)\\s"
       ],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "{{depName}}/{{packageName}}"
+      "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": ["\\.ya?ml$"],
+      "matchStrings": [
+        "(image|repository):\\s*(?<depName>[^:@\\s]+)@(?<currentValue>[^\\s]+)\\s"
+      ],
+      "datasourceTemplate": "docker"
     },
     {
       "fileMatch": ["\\.ya?ml$"],
@@ -34,6 +40,8 @@
   "hostRules": [
     {
       "matchHost": "index.docker.io",
+      "hostType": "docker",
+      "username": "octaviodimarco",
       "token": "{{ secrets.MEND_DOCKER_HUB_TOKEN }}"
     }
   ],
