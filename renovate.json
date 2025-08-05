@@ -37,14 +37,6 @@
       "datasourceTemplate": "helm"
     }
   ],
-  "hostRules": [
-    {
-      "matchHost": "index.docker.io",
-      "hostType": "docker",
-      "username": "octaviodimarco",
-      "token": "{{ secrets.MEND_DOCKER_HUB_TOKEN }}"
-    }
-  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
