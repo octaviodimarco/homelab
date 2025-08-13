@@ -5,3 +5,4 @@ resources:
   - ddns-updater
   - jellyfin
   - n8n
+  - memos

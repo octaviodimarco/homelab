@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memos
+  template:
+    metadata:
+      labels:
+        app: memos
+    spec:
+      securityContext:
+        # Usamos un usuario no-root para mayor seguridad
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: memos
+          image: neosmemo/memos:0.25.0
+          envFrom:
+            - secretRef:
+                name: memos-secret
+
+          ports:
+            - containerPort: 5230 # El puerto que usa Memos por defecto
+              name: http
+
+          volumeMounts:
+            # Memos necesita un volumen para guardar activos (como imágenes)
+            - mountPath: /var/opt/memos
+              name: data
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: memos-data-pvc
