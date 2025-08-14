@@ -16,8 +16,8 @@ spec:
       owner: memos
       secret:
         name: memos-db-credentials
-  monitoring:
-    enablePodMonitor: true
+  # monitoring:
+  #   enablePodMonitor: true
 ---
 apiVersion: v1
 kind: Service
