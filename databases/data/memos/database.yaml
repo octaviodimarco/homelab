@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: memos-db
+  namespace: memos
+spec:
+  description: "PostgreSQL cluster for Memos"
+  instances: 1
+  storage:
+    size: 2Gi
+    storageClass: nfs-csi-data
+
+  bootstrap:
+    initdb:
+      database: memos_db
+      owner: memos
+      secret:
+        name: memos-db-credentials
+  # monitoring:
+  #   enablePodMonitor: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memos-db-lb
+  namespace: memos
+  annotations:
+    external-dns.kubernetes.io/managed: "true"
+    external-dns.alpha.kubernetes.io/hostname: pg-memos.data.dimarco-server.site
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: memos-db
+    cnpg.io/instanceRole: primary

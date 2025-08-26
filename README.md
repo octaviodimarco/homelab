@@ -34,6 +34,18 @@ La infraestructura está diseñada bajo un enfoque **multi-clúster**, con separ
 
 ---
 
+## Sistema Operativo de los Nodos
+
+Todos los LXC que corren los clústeres (`gordito`, `data`) utilizan **NixOS**, lo que permite:
+
+- Gestión completamente declarativa de paquetes, servicios y configuraciones.
+- Reproducibilidad exacta entre nodos y entornos.
+- Facilidad para actualizar y versionar la infraestructura a través de repositorios Git.
+
+Esto incluye tanto los nodos de control como los workers, garantizando que **todo el stack** desde el SO hasta las aplicaciones en contenedores está bajo control declarativo.
+
+---
+
 ## Stack Tecnológico
 
 | Categoría        | Herramienta                                  | Descripción                                                               |
@@ -57,6 +69,7 @@ A continuación, una lista representativa (en expansión) de las aplicaciones de
 | Jellyfin      | Servidor multimedia para streaming personal        | Sí                     |
 | Linkding      | Gestor de marcadores minimalista                   | Sí                     |
 | Grafana       | Paneles de monitoreo y visualización               | Sí                     |
+| Memos         | Notas y gestión de ideas personales                | Sí                     |
 
 
 > Esta tabla crecerá a medida que se integren nuevos servicios (automatización, backups, dashboards, etc.).
