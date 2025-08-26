@@ -22,7 +22,7 @@ spec:
           image: neosmemo/memos:0.25.0
           envFrom:
             - secretRef:
-                name: memos-secret
+                name: memos-db-secret
 
           ports:
             - containerPort: 5230 # El puerto que usa Memos por defecto
