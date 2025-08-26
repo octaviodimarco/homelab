@@ -11,7 +11,7 @@ spec:
     branch: feature/memos
   secretRef:
     name: flux-system
-  url: https://github.com/octaviodimarco/homelab.git
+  url: ssh://git@github.com/octaviodimarco/homelab
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
