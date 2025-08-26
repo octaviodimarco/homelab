@@ -20,6 +20,9 @@ spec:
       containers:
         - name: memos
           image: neosmemo/memos:0.25.0
+          env:
+            - name: MEMOS_PORT
+              value: "5230"
           envFrom:
             - secretRef:
                 name: memos-db-secret
