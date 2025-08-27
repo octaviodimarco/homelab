@@ -1,40 +1,14 @@
+# apps/base/ollama/networking.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: ollama-svc
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: 11434
       targetPort: 11434
+      protocol: TCP
       name: http
   selector:
     app: ollama
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ollama-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-production"
-    external-dns.kubernetes.io/ignore: "true"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: "ollama.dimarco-server.site"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: ollama-svc
-                port:
-                  name: http
-  tls:
-    - hosts:
-        - "ollama.dimarco-server.site"
-      secretName: ollama-tls
