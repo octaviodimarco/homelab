@@ -29,5 +29,9 @@ spec:
               memory: "6Gi"
               cpu: "3000m"
           volumeMounts:
-            - name: ollama-pvc
+            - name: ollama-data
               mountPath: /root/.ollama
+      volumes:
+        - name: ollama-data
+          persistentVolumeClaim:
+            claimName: ollama-pvc
