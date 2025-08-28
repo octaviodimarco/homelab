@@ -1,0 +1,14 @@
+# apps/base/ollama/networking.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-svc
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 11434
+      targetPort: 11434
+      protocol: TCP
+      name: http
+  selector:
+    app: ollama
