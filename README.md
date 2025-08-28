@@ -57,6 +57,7 @@ Esto incluye tanto los nodos de control como los workers, garantizando que **tod
 | **Seguridad** | Cert-Manager, External Secrets + Infisical   | Emisión automática de certificados TLS y gestión segura de secretos externos. |
 | **Datos** | CloudNativePG, Synology CSI                  | Gestión experta de PostgreSQL y provisión de almacenamiento persistente. |
 | **Observabilidad** | kube-prometheus-stack                        | Incluye Prometheus y Grafana para la recolección y visualización de métricas. |
+| **IA / ML** | **Ollama** | Permite correr modelos de lenguaje grandes (LLMs) de forma local.      |
 
 ---
 
@@ -83,6 +84,7 @@ A continuación, una lista representativa (en expansión) de las aplicaciones de
 - **Gestión Declarativa Total**: Toda la infraestructura es reproducible desde cero a partir de este repositorio de Git.
 - **Red y DNS Completamente Automatizados**: Descubrimiento de servicios internos y actualización de la IP pública sin intervención manual.
 - **Seguridad por Diseño**: Cero credenciales en Git, TLS con Let's Encrypt para todos los servicios expuestos.
+- **Gestión de Cargas de Trabajo de IA**: Despliegue y exposición de servicios de modelos de lenguaje (Ollama) con gestión de recursos específica
 - **Transcodificación por GPU**: Passthrough de iGPU configurado en Proxmox para acelerar por hardware las cargas de trabajo de video en Jellyfin.
 - **Monitoreo Avanzado**: Pila completa de métricas y dashboards en Grafana para una visibilidad total del sistema.
 
