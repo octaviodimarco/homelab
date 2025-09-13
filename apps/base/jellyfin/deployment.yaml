@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:2025090105
+          image: jellyfin/jellyfin:2025090805
           securityContext:
             privileged: true
           ports:
