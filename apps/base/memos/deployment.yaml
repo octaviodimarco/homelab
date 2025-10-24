@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: memos
-          image: neosmemo/memos:0.25.1
+          image: neosmemo/memos:0.25.2
           env:
             - name: MEMOS_PORT
               value: "5230"
