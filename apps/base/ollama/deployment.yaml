@@ -12,6 +12,8 @@ spec:
       labels:
         app: ollama
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3s-nixos-worker
       containers:
         - name: ollama
           image: ollama/ollama:latest
@@ -21,13 +23,15 @@ spec:
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
+            - name: OLLAMA_NUM_THREAD
+              value: "4"
           resources:
             requests:
-              memory: "2Gi"
-              cpu: "1000m"
+              memory: "4Gi"
+              cpu: "2000m"
             limits:
-              memory: "6Gi"
-              cpu: "3000m"
+              memory: "6.5Gi"
+              cpu: "4000m"
           volumeMounts:
             - name: ollama-data
               mountPath: /root/.ollama
