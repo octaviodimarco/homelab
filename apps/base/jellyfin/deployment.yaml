@@ -22,6 +22,13 @@ spec:
           ports:
             - containerPort: 8096
               name: http
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
           volumeMounts:
             - name: config
               mountPath: /config
