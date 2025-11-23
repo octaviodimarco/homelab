@@ -5,6 +5,5 @@ resources:
   - repository.yaml
   - release.yaml
   - storage.yaml
-  - networking.yaml
   - secrets.yaml
 
