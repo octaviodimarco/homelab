@@ -1,0 +1,30 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-backup
+  namespace: velero
+spec:
+  schedule: "0 2 * * *"
+  template:
+    includedNamespaces:
+      - jellyfin
+      - ollama
+      - linkding
+      - memos
+      - n8n
+    excludedNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+    excludedResources:
+      - events
+      - events.events.k8s.io
+      - backups.velero.io
+      - restores.velero.io
+      - resticrepositories.velero.io
+    ttl: 168h
+    storageLocation: minio-backup-location
+    labelSelector:
+      matchLabels:
+        backup: "true"
+

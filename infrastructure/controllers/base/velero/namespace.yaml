@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: velero
+  labels:
+    k8s.dimarco-server.site/scrape: "true"
+
