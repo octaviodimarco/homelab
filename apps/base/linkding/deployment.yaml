@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: linkding
+        backup: "true"
     spec:
       # securityContext:
       #   fsGroup: 1000
