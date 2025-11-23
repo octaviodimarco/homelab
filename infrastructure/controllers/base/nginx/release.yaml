@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: flux-system
-      version: "4.13.2" # o la versión que quieras usar
+      version: "4.14.0" # o la versión que quieras usar
   values:
     controller:
       replicaCount: 1
