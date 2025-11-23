@@ -1,0 +1,33 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: vikunja-db-backup
+  namespace: vikunja
+spec:
+  cluster:
+    name: vikunja-db
+  method: barmanObjectStore
+  target: primary
+  data:
+    compression: gzip
+    encryption: AES256
+    jobs: 2
+  wal:
+    compression: gzip
+    encryption: AES256
+    maxParallel: 1
+  retentionPolicy: "30d"
+  s3:
+    destinationPath: s3://cnpg-backups/vikunja/
+    endpoint: http://minio.minio.svc.cluster.local:9000
+    endpointCA: null
+    region: minio
+    forcePathStyle: true
+    credentials:
+      accessKeyId:
+        name: minio-credentials
+        key: rootUser
+      secretAccessKey:
+        name: minio-credentials
+        key: rootPassword
+

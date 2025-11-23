@@ -5,3 +5,5 @@ resources:
   - namespace.yaml
   - secrets.yaml
   - database.yaml
+  - backup.yaml
+  - minio-credentials.yaml

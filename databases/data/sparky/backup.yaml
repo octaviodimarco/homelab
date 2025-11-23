@@ -1,0 +1,33 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: sparky-db-backup
+  namespace: sparky
+spec:
+  cluster:
+    name: sparky-db
+  method: barmanObjectStore
+  target: primary
+  data:
+    compression: gzip
+    encryption: AES256
+    jobs: 2
+  wal:
+    compression: gzip
+    encryption: AES256
+    maxParallel: 1
+  retentionPolicy: "30d"
+  s3:
+    destinationPath: s3://cnpg-backups/sparky/
+    endpoint: http://minio.minio.svc.cluster.local:9000
+    endpointCA: null
+    region: minio
+    forcePathStyle: true
+    credentials:
+      accessKeyId:
+        name: minio-credentials
+        key: rootUser
+      secretAccessKey:
+        name: minio-credentials
+        key: rootPassword
+
