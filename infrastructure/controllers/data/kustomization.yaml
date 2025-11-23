@@ -6,3 +6,4 @@ resources:
   - csi-driver-nfs
   - metallb
   - external-dns
+  - minio
