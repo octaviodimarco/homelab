@@ -1,0 +1,40 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minio
+  namespace: minio
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: minio
+      version: "5.*"
+      sourceRef:
+        kind: HelmRepository
+        name: minio
+        namespace: minio
+      interval: 12h
+  values:
+    mode: standalone
+    auth:
+      rootUser:
+        existingSecret: minio-credentials
+        secretKey: rootUser
+      rootPassword:
+        existingSecret: minio-credentials
+        secretKey: rootPassword
+    persistence:
+      enabled: true
+      existingClaim: minio-data
+    service:
+      type: ClusterIP
+      apiPort: 9000
+      consolePort: 9001
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "200m"
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+
