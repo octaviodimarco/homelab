@@ -51,8 +51,8 @@ spec:
             successThreshold: 1
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "200m"
+              memory: "1Gi"
+              cpu: "500m"
             limits:
               memory: "4Gi"
               cpu: "2000m"
@@ -63,14 +63,6 @@ spec:
               mountPath: /media
             - name: device-dri
               mountPath: /dev/dri
-          # --- SECCIÓN OPCIONAL PARA TRANSCODIFICACIÓN POR HARDWARE (Intel QSV) ---
-          # Si tu CPU soporta Intel Quick Sync, esto mejora el rendimiento drásticamente.
-          # Descomenta las siguientes líneas si quieres probarlo.
-          # securityContext:
-          #   privileged: true # Necesario para acceder al dispositivo de hardware
-          # volumeMounts:
-          #   - name: device-dri
-          #     mountPath: /dev/dri
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -81,7 +73,3 @@ spec:
         - name: device-dri
           hostPath:
             path: /dev/dri
-        # --- SECCIÓN OPCIONAL PARA TRANSCODIFICACIÓN POR HARDWARE ---
-        # - name: device-dri
-        #   hostPath:
-        #     path: /dev/dri
