@@ -27,12 +27,6 @@ metadata:
     # Buffer settings optimizados para streaming
     nginx.ingress.kubernetes.io/proxy-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    # Preservar headers para apps nativas (Apple TV, Quick Connect)
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header X-Forwarded-Protocol $scheme;
-      proxy_set_header X-Forwarded-Host $http_host;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection $http_connection;
 spec:
   ingressClassName: nginx
   rules:
