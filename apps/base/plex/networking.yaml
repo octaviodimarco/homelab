@@ -32,6 +32,8 @@ metadata:
     # Preservar headers de host y protocolo para OAuth
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # Mejorar manejo de redirects para OAuth
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
 spec:
   ingressClassName: nginx
   rules:
