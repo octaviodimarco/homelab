@@ -14,6 +14,7 @@ spec:
       labels:
         app: plex
     spec:
+      hostname: plex
       securityContext:
         fsGroup: 100
       initContainers:
@@ -38,26 +39,43 @@ spec:
                 echo '<Preferences/>' >> "$CONFIG_FILE"
               fi
               
-              # Configure remote access settings
-              if ! grep -q "customConnections" "$CONFIG_FILE"; then
-                echo "Configuring custom connections..."
+              # Configure custom connections (update if exists, add if not)
+              if grep -q 'name="customConnections"' "$CONFIG_FILE"; then
+                echo "Updating custom connections..."
+                sed -i 's|name="customConnections" value="[^"]*"|name="customConnections" value="https://plex.dimarco-server.site:443"|g' "$CONFIG_FILE"
+              else
+                echo "Adding custom connections..."
                 sed -i 's|</Preferences>|  <Setting name="customConnections" value="https://plex.dimarco-server.site:443"/>\n</Preferences>|' "$CONFIG_FILE"
               fi
               
-              # Disable port check
-              if ! grep -q "disableRemoteSecurity" "$CONFIG_FILE"; then
+              # Disable port check (update if exists, add if not)
+              if grep -q 'name="disableRemoteSecurity"' "$CONFIG_FILE"; then
+                echo "Updating remote security setting..."
+                sed -i 's|name="disableRemoteSecurity" value="[^"]*"|name="disableRemoteSecurity" value="1"|g' "$CONFIG_FILE"
+              else
                 echo "Disabling remote security check..."
                 sed -i 's|</Preferences>|  <Setting name="disableRemoteSecurity" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
               fi
               
               # Set manual port configuration
-              if ! grep -q "ManualPortMappingMode" "$CONFIG_FILE"; then
+              if grep -q 'name="ManualPortMappingMode"' "$CONFIG_FILE"; then
+                sed -i 's|name="ManualPortMappingMode" value="[^"]*"|name="ManualPortMappingMode" value="1"|g' "$CONFIG_FILE"
+              else
                 echo "Enabling manual port mapping..."
                 sed -i 's|</Preferences>|  <Setting name="ManualPortMappingMode" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
               fi
               
-              if ! grep -q "ManualPortMappingPort" "$CONFIG_FILE"; then
+              if grep -q 'name="ManualPortMappingPort"' "$CONFIG_FILE"; then
+                sed -i 's|name="ManualPortMappingPort" value="[^"]*"|name="ManualPortMappingPort" value="443"|g' "$CONFIG_FILE"
+              else
                 sed -i 's|</Preferences>|  <Setting name="ManualPortMappingPort" value="443"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              # Force direct connection (prevent relayed connections)
+              if grep -q 'name="customCertificateDomain"' "$CONFIG_FILE"; then
+                sed -i 's|name="customCertificateDomain" value="[^"]*"|name="customCertificateDomain" value="plex.dimarco-server.site"|g' "$CONFIG_FILE"
+              else
+                sed -i 's|</Preferences>|  <Setting name="customCertificateDomain" value="plex.dimarco-server.site"/>\n</Preferences>|' "$CONFIG_FILE"
               fi
               
               echo "Plex configuration updated"
@@ -72,12 +90,31 @@ spec:
           ports:
             - containerPort: 32400
               name: http
+              protocol: TCP
             - containerPort: 3005
               name: companion
+              protocol: TCP
             - containerPort: 8324
               name: roku
+              protocol: TCP
             - containerPort: 32469
-              name: dlna
+              name: dlna-tcp
+              protocol: TCP
+            - containerPort: 1900
+              name: dlna-udp
+              protocol: UDP
+            - containerPort: 32410
+              name: gdm-1-udp
+              protocol: UDP
+            - containerPort: 32412
+              name: gdm-2-udp
+              protocol: UDP
+            - containerPort: 32413
+              name: gdm-3-udp
+              protocol: UDP
+            - containerPort: 32414
+              name: gdm-4-udp
+              protocol: UDP
           env:
             - name: TZ
               value: "America/Argentina/Buenos_Aires"
