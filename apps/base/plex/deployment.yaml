@@ -60,6 +60,10 @@ spec:
               value: "https://plex.dimarco-server.site"
             - name: ALLOWED_NETWORKS
               value: "0.0.0.0/0"
+            - name: PLEX_ANNOUNCE_IP
+              value: "https://plex.dimarco-server.site"
+            - name: PLEX_REVERSE_PROXY
+              value: "1"
           livenessProbe:
             httpGet:
               path: /web
