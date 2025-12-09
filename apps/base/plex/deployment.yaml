@@ -55,7 +55,11 @@ spec:
             - name: ADVERTISE_IP
               value: "https://plex.dimarco-server.site"
             - name: PLEX_EXTERNAL_PORT
-              value: "32400"
+              value: "443"
+            - name: PLEX_EXTERNAL_URL
+              value: "https://plex.dimarco-server.site"
+            - name: ALLOWED_NETWORKS
+              value: "0.0.0.0/0"
           livenessProbe:
             httpGet:
               path: /web
