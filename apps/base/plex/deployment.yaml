@@ -78,6 +78,27 @@ spec:
                 sed -i 's|</Preferences>|  <Setting name="customCertificateDomain" value="plex.dimarco-server.site"/>\n</Preferences>|' "$CONFIG_FILE"
               fi
               
+              # Disable relayed connections completely
+              if grep -q 'name="networkRelayEnabled"' "$CONFIG_FILE"; then
+                sed -i 's|name="networkRelayEnabled" value="[^"]*"|name="networkRelayEnabled" value="0"|g' "$CONFIG_FILE"
+              else
+                sed -i 's|</Preferences>|  <Setting name="networkRelayEnabled" value="0"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              # Prefer secure connections
+              if grep -q 'name="networkPreferSecureConnections"' "$CONFIG_FILE"; then
+                sed -i 's|name="networkPreferSecureConnections" value="[^"]*"|name="networkPreferSecureConnections" value="1"|g' "$CONFIG_FILE"
+              else
+                sed -i 's|</Preferences>|  <Setting name="networkPreferSecureConnections" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              # Set custom server connections (force direct connection)
+              if grep -q 'name="customServerConnections"' "$CONFIG_FILE"; then
+                sed -i 's|name="customServerConnections" value="[^"]*"|name="customServerConnections" value="https://plex.dimarco-server.site:443"|g' "$CONFIG_FILE"
+              else
+                sed -i 's|</Preferences>|  <Setting name="customServerConnections" value="https://plex.dimarco-server.site:443"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
               echo "Plex configuration updated"
           volumeMounts:
             - name: config
