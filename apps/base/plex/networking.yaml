@@ -27,6 +27,11 @@ metadata:
     # Buffer settings optimizados para streaming
     nginx.ingress.kubernetes.io/proxy-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    # Permitir WebSockets (necesario para algunas funciones de Plex)
+    nginx.ingress.kubernetes.io/websocket-services: "plex-svc"
+    # Preservar headers de host y protocolo para OAuth
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:

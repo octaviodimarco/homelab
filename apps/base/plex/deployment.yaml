@@ -52,6 +52,10 @@ spec:
               value: "1000"
             - name: PLEX_DEBUG
               value: "1"
+            - name: ADVERTISE_IP
+              value: "https://plex.dimarco-server.site"
+            - name: PLEX_EXTERNAL_PORT
+              value: "32400"
           livenessProbe:
             httpGet:
               path: /web
