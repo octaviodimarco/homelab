@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      containers:
+        - name: plex
+          image: plexinc/pms-docker:latest
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 32400
+              name: http
+            - containerPort: 3005
+              name: companion
+            - containerPort: 8324
+              name: roku
+            - containerPort: 32469
+              name: dlna
+          env:
+            - name: TZ
+              value: "America/Argentina/Buenos_Aires"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: PLEX_CLAIM
+              valueFrom:
+                secretKeyRef:
+                  name: plex-claim-secret
+                  key: PLEX_CLAIM
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 32400
+            initialDelaySeconds: 120
+            periodSeconds: 60
+            timeoutSeconds: 15
+            failureThreshold: 5
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 32400
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+            successThreshold: 1
+          startupProbe:
+            httpGet:
+              path: /
+              port: 32400
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 40
+            successThreshold: 1
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: transcode
+              mountPath: /transcode
+            - name: media
+              mountPath: /data
+            - name: device-dri
+              mountPath: /dev/dri
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: plex-config-pvc
+        - name: transcode
+          persistentVolumeClaim:
+            claimName: plex-transcode-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: plex-media-pvc
+        - name: device-dri
+          hostPath:
+            path: /dev/dri

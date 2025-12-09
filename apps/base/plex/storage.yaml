@@ -1,0 +1,40 @@
+# --- Volumen para la LIBRERÍA DE MEDIA (compartido con Jellyfin) ---
+# Reutilizamos el mismo PV de Jellyfin para compartir la biblioteca de media
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-pvc
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti
+  volumeName: jellyfin-media-pv
+---
+# --- Volumen para la CONFIGURACIÓN de Plex ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config-pvc
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# --- Volumen para TRANSCODING (mejores prácticas: storage local, pero usamos NFS por consistencia) ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-transcode-pvc
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
