@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediamanager
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mediamanager
+  template:
+    metadata:
+      labels:
+        app: mediamanager
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: mediamanager
+          image: maxdorninger/mediamanager:latest
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: PORT
+              value: "8000"
+            - name: MEDIAMANAGER_DATABASE__HOST
+              value: "mediamanager-db-rw.mediamanager.svc.cluster.local"
+            - name: MEDIAMANAGER_DATABASE__PORT
+              value: "5432"
+            - name: MEDIAMANAGER_DATABASE__DBNAME
+              value: "mediamanager"
+            - name: MEDIAMANAGER_DATABASE__USER
+              valueFrom:
+                secretKeyRef:
+                  name: mediamanager-db-secret
+                  key: DB_USER
+            - name: MEDIAMANAGER_DATABASE__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mediamanager-db-secret
+                  key: DB_PASSWORD
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 5
+            successThreshold: 1
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+            successThreshold: 1
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: mediamanager-config-pvc

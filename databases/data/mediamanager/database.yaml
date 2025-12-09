@@ -1,0 +1,37 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: mediamanager-db
+  namespace: mediamanager
+spec:
+  description: "PostgreSQL cluster for MediaManager"
+  instances: 1
+  storage:
+    size: 5Gi
+    storageClass: nfs-csi-data
+
+  bootstrap:
+    initdb:
+      database: mediamanager
+      owner: mediamanager
+      secret:
+        name: mediamanager-db-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediamanager-db-lb
+  namespace: mediamanager
+  annotations:
+    external-dns.kubernetes.io/managed: "true"
+    external-dns.alpha.kubernetes.io/hostname: pg-mediamanager.data.dimarco-server.site
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: mediamanager-db
+    cnpg.io/instanceRole: primary
