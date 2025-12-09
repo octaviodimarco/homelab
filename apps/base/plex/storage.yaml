@@ -1,6 +1,25 @@
 # --- Volumen para la LIBRERÍA DE MEDIA (compartido con Jellyfin) ---
-# Reutilizamos el mismo PV de Jellyfin para compartir la biblioteca de media
-# Con ReadWriteMany, múltiples PVCs pueden vincularse al mismo PV
+# Creamos un PV separado que apunta al mismo path de NFS que Jellyfin
+# Ambos PVs apuntan al mismo almacenamiento físico, permitiendo compartir los datos
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-pv
+  labels:
+    app: shared-media
+    type: media-library
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.1.79
+    path: "/volume1/Proxmox/Media"
+    readOnly: false
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -12,7 +31,7 @@ spec:
   resources:
     requests:
       storage: 10Ti
-  volumeName: jellyfin-media-pv
+  volumeName: plex-media-pv
 ---
 # --- Volumen para la CONFIGURACIÓN de Plex ---
 apiVersion: v1
