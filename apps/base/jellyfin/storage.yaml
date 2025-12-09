@@ -3,12 +3,16 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: jellyfin-media-pv
+  labels:
+    app: shared-media
+    type: media-library
 spec:
   storageClassName: ""
   capacity:
     storage: 10Ti
   accessModes:
     - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.1.79
     path: "/volume1/Proxmox/Media"
@@ -26,6 +30,7 @@ spec:
     requests:
       storage: 10Ti
   volumeName: jellyfin-media-pv
+  # Nota: Con ReadWriteMany, este PVC puede ser compartido con otros PVCs
 ---
 # --- Volumen para la CONFIGURACIÓN de Jellyfin (datos nuevos) ---
 apiVersion: v1

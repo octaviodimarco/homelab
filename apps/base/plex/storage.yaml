@@ -1,5 +1,6 @@
 # --- Volumen para la LIBRERÍA DE MEDIA (compartido con Jellyfin) ---
 # Reutilizamos el mismo PV de Jellyfin para compartir la biblioteca de media
+# Con ReadWriteMany, múltiples PVCs pueden vincularse al mismo PV
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
