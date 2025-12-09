@@ -17,95 +17,10 @@ spec:
       hostname: plex
       securityContext:
         fsGroup: 100
-      initContainers:
-        - name: plex-config-init
-          image: busybox:latest
-          command: ['sh', '-c']
-          args:
-            - |
-              # Wait for config directory to be available
-              while [ ! -d /config/Library/Application\ Support/Plex\ Media\ Server ]; do
-                echo "Waiting for Plex config directory..."
-                sleep 2
-              done
-              
-              CONFIG_FILE="/config/Library/Application Support/Plex Media Server/Preferences.xml"
-              
-              # Create config file if it doesn't exist
-              if [ ! -f "$CONFIG_FILE" ]; then
-                echo "Creating initial Preferences.xml..."
-                mkdir -p "$(dirname "$CONFIG_FILE")"
-                echo '<?xml version="1.0" encoding="utf-8"?>' > "$CONFIG_FILE"
-                echo '<Preferences/>' >> "$CONFIG_FILE"
-              fi
-              
-              # Configure custom connections (update if exists, add if not)
-              if grep -q 'name="customConnections"' "$CONFIG_FILE"; then
-                echo "Updating custom connections..."
-                sed -i 's|name="customConnections" value="[^"]*"|name="customConnections" value="https://plex.dimarco-server.site:443"|g' "$CONFIG_FILE"
-              else
-                echo "Adding custom connections..."
-                sed -i 's|</Preferences>|  <Setting name="customConnections" value="https://plex.dimarco-server.site:443"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              # Disable port check (update if exists, add if not)
-              if grep -q 'name="disableRemoteSecurity"' "$CONFIG_FILE"; then
-                echo "Updating remote security setting..."
-                sed -i 's|name="disableRemoteSecurity" value="[^"]*"|name="disableRemoteSecurity" value="1"|g' "$CONFIG_FILE"
-              else
-                echo "Disabling remote security check..."
-                sed -i 's|</Preferences>|  <Setting name="disableRemoteSecurity" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              # Set manual port configuration
-              if grep -q 'name="ManualPortMappingMode"' "$CONFIG_FILE"; then
-                sed -i 's|name="ManualPortMappingMode" value="[^"]*"|name="ManualPortMappingMode" value="1"|g' "$CONFIG_FILE"
-              else
-                echo "Enabling manual port mapping..."
-                sed -i 's|</Preferences>|  <Setting name="ManualPortMappingMode" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              if grep -q 'name="ManualPortMappingPort"' "$CONFIG_FILE"; then
-                sed -i 's|name="ManualPortMappingPort" value="[^"]*"|name="ManualPortMappingPort" value="443"|g' "$CONFIG_FILE"
-              else
-                sed -i 's|</Preferences>|  <Setting name="ManualPortMappingPort" value="443"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              # Force direct connection (prevent relayed connections)
-              if grep -q 'name="customCertificateDomain"' "$CONFIG_FILE"; then
-                sed -i 's|name="customCertificateDomain" value="[^"]*"|name="customCertificateDomain" value="plex.dimarco-server.site"|g' "$CONFIG_FILE"
-              else
-                sed -i 's|</Preferences>|  <Setting name="customCertificateDomain" value="plex.dimarco-server.site"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              # Disable relayed connections completely
-              if grep -q 'name="networkRelayEnabled"' "$CONFIG_FILE"; then
-                sed -i 's|name="networkRelayEnabled" value="[^"]*"|name="networkRelayEnabled" value="0"|g' "$CONFIG_FILE"
-              else
-                sed -i 's|</Preferences>|  <Setting name="networkRelayEnabled" value="0"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              # Prefer secure connections
-              if grep -q 'name="networkPreferSecureConnections"' "$CONFIG_FILE"; then
-                sed -i 's|name="networkPreferSecureConnections" value="[^"]*"|name="networkPreferSecureConnections" value="1"|g' "$CONFIG_FILE"
-              else
-                sed -i 's|</Preferences>|  <Setting name="networkPreferSecureConnections" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              # Set custom server connections (force direct connection)
-              if grep -q 'name="customServerConnections"' "$CONFIG_FILE"; then
-                sed -i 's|name="customServerConnections" value="[^"]*"|name="customServerConnections" value="https://plex.dimarco-server.site:443"|g' "$CONFIG_FILE"
-              else
-                sed -i 's|</Preferences>|  <Setting name="customServerConnections" value="https://plex.dimarco-server.site:443"/>\n</Preferences>|' "$CONFIG_FILE"
-              fi
-              
-              echo "Plex configuration updated"
-          volumeMounts:
-            - name: config
-              mountPath: /config
       containers:
         - name: plex
           image: plexinc/pms-docker:latest
+          imagePullPolicy: Always
           securityContext:
             privileged: true
           ports:
@@ -148,28 +63,14 @@ spec:
                 secretKeyRef:
                   name: plex-claim-secret
                   key: PLEX_CLAIM
-            - name: NVIDIA_VISIBLE_DEVICES
-              value: "all"
-            - name: CHANGE_CONFIG_DIR_OWNERSHIP
-              value: "false"
             - name: PLEX_UID
               value: "1026"
             - name: PLEX_GID
               value: "100"
-            - name: PLEX_DEBUG
-              value: "1"
-            - name: ADVERTISE_IP
-              value: "https://plex.dimarco-server.site"
-            - name: PLEX_EXTERNAL_PORT
-              value: "443"
-            - name: PLEX_EXTERNAL_URL
-              value: "https://plex.dimarco-server.site"
             - name: ALLOWED_NETWORKS
               value: "0.0.0.0/0"
-            - name: PLEX_ANNOUNCE_IP
-              value: "https://plex.dimarco-server.site"
-            - name: PLEX_REVERSE_PROXY
-              value: "1"
+            - name: CHANGE_CONFIG_DIR_OWNERSHIP
+              value: "false"
           livenessProbe:
             httpGet:
               path: /web

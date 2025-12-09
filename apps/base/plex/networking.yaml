@@ -18,6 +18,8 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     external-dns.kubernetes.io/ignore: "true"
+    # Plex habla HTTP internamente aunque el Ingress exponga HTTPS
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     # Anotación importante para NGINX para permitir archivos grandes (streaming)
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     # Timeouts extendidos para streaming de video (previene desconexiones)
