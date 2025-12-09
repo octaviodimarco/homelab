@@ -42,19 +42,23 @@ spec:
                 secretKeyRef:
                   name: plex-claim-secret
                   key: PLEX_CLAIM
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
           livenessProbe:
             httpGet:
-              path: /
+              path: /web
               port: 32400
-            initialDelaySeconds: 120
+              scheme: HTTP
+            initialDelaySeconds: 180
             periodSeconds: 60
-            timeoutSeconds: 15
+            timeoutSeconds: 10
             failureThreshold: 5
             successThreshold: 1
           readinessProbe:
             httpGet:
-              path: /
+              path: /web
               port: 32400
+              scheme: HTTP
             initialDelaySeconds: 60
             periodSeconds: 30
             timeoutSeconds: 10
@@ -62,11 +66,12 @@ spec:
             successThreshold: 1
           startupProbe:
             httpGet:
-              path: /
+              path: /web
               port: 32400
-            initialDelaySeconds: 60
+              scheme: HTTP
+            initialDelaySeconds: 180
             periodSeconds: 30
-            timeoutSeconds: 15
+            timeoutSeconds: 10
             failureThreshold: 30
             successThreshold: 1
           resources:
@@ -85,6 +90,10 @@ spec:
               mountPath: /data
             - name: device-dri
               mountPath: /dev/dri
+              readOnly: true
+            - name: dev-usb
+              mountPath: /dev/bus/usb
+              readOnly: true
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -98,3 +107,6 @@ spec:
         - name: device-dri
           hostPath:
             path: /dev/dri
+        - name: dev-usb
+          hostPath:
+            path: /dev/bus/usb
