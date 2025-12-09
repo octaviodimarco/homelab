@@ -64,10 +64,10 @@ spec:
             httpGet:
               path: /
               port: 32400
-            initialDelaySeconds: 30
-            periodSeconds: 15
-            timeoutSeconds: 10
-            failureThreshold: 40
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 15
+            failureThreshold: 30
             successThreshold: 1
           resources:
             requests:
