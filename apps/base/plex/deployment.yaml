@@ -16,6 +16,54 @@ spec:
     spec:
       securityContext:
         fsGroup: 100
+      initContainers:
+        - name: plex-config-init
+          image: busybox:latest
+          command: ['sh', '-c']
+          args:
+            - |
+              # Wait for config directory to be available
+              while [ ! -d /config/Library/Application\ Support/Plex\ Media\ Server ]; do
+                echo "Waiting for Plex config directory..."
+                sleep 2
+              done
+              
+              CONFIG_FILE="/config/Library/Application Support/Plex Media Server/Preferences.xml"
+              
+              # Create config file if it doesn't exist
+              if [ ! -f "$CONFIG_FILE" ]; then
+                echo "Creating initial Preferences.xml..."
+                mkdir -p "$(dirname "$CONFIG_FILE")"
+                echo '<?xml version="1.0" encoding="utf-8"?>' > "$CONFIG_FILE"
+                echo '<Preferences/>' >> "$CONFIG_FILE"
+              fi
+              
+              # Configure remote access settings
+              if ! grep -q "customConnections" "$CONFIG_FILE"; then
+                echo "Configuring custom connections..."
+                sed -i 's|</Preferences>|  <Setting name="customConnections" value="https://plex.dimarco-server.site:443"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              # Disable port check
+              if ! grep -q "disableRemoteSecurity" "$CONFIG_FILE"; then
+                echo "Disabling remote security check..."
+                sed -i 's|</Preferences>|  <Setting name="disableRemoteSecurity" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              # Set manual port configuration
+              if ! grep -q "ManualPortMappingMode" "$CONFIG_FILE"; then
+                echo "Enabling manual port mapping..."
+                sed -i 's|</Preferences>|  <Setting name="ManualPortMappingMode" value="1"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              if ! grep -q "ManualPortMappingPort" "$CONFIG_FILE"; then
+                sed -i 's|</Preferences>|  <Setting name="ManualPortMappingPort" value="443"/>\n</Preferences>|' "$CONFIG_FILE"
+              fi
+              
+              echo "Plex configuration updated"
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: plex
           image: plexinc/pms-docker:latest
