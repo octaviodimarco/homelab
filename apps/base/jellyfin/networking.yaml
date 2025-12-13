@@ -26,7 +26,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     # Buffer settings optimizados para streaming
     nginx.ingress.kubernetes.io/proxy-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+
     # Headers para reverse proxy (Jellyfin requiere estos para identificar IPs reales)
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     # NGINX Ingress Controller pasa todos los headers del cliente al upstream por defecto
