@@ -27,8 +27,10 @@ metadata:
     # Buffer settings optimizados para streaming
     nginx.ingress.kubernetes.io/proxy-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    # Headers para reverse proxy (Jellyfin requiere estos para identificar IPs reales)
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     # NGINX Ingress Controller pasa todos los headers del cliente al upstream por defecto
-    # incluyendo Authorization y X-Emby-Authorization
+    # incluyendo Authorization y X-Emby-Authorization (requiere enable-underscores-in-headers)
 spec:
   ingressClassName: nginx
   rules:
