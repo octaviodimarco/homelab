@@ -22,3 +22,6 @@ spec:
         enabled: true
         patch:
           enabled: true
+      config:
+        # Enable underscores in headers to allow X-Emby-Authorization header
+        enable-underscores-in-headers: "true"
