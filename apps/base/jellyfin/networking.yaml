@@ -27,10 +27,8 @@ metadata:
     # Buffer settings optimizados para streaming
     nginx.ingress.kubernetes.io/proxy-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    # Reenvío explícito de headers de autenticación para clientes como Swiftfin
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header X-Emby-Authorization $http_x_emby_authorization;
-      proxy_set_header Authorization $http_authorization;
+    # NGINX Ingress Controller pasa todos los headers del cliente al upstream por defecto
+    # incluyendo Authorization y X-Emby-Authorization
 spec:
   ingressClassName: nginx
   rules:
