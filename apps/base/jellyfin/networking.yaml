@@ -35,29 +35,27 @@ metadata:
     # incluyendo Authorization y X-Emby-Authorization (requiere enable-underscores-in-headers)
     # Fix para Apple TV: inyecta el parámetro App en el body JSON si falta en /Users/AuthenticateByName
     # Requiere annotations-risk-level: Critical en el nginx ingress controller
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      access_by_lua_block {
-        -- Solo interceptamos si es la URL de auth y es POST
-        if ngx.var.uri == "/Users/AuthenticateByName" and ngx.var.request_method == "POST" then
-          -- Forzamos la lectura del body (esto habilita buffering automáticamente)
-          ngx.req.read_body()
-          local body = ngx.req.get_body_data()
-          
-          if body then
-            local cjson = require "cjson"
-            -- Usamos pcall para seguridad contra JSON inválido
-            local ok, json = pcall(cjson.decode, body)
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location = /Users/AuthenticateByName {
+        proxy_request_buffering on;
+        access_by_lua_block {
+          if ngx.var.request_method == "POST" then
+            ngx.req.read_body()
+            local body = ngx.req.get_body_data()
             
-            -- Si falta App o está vacía, inyectamos "Apple TV"
-            if ok and json and (not json.App or json.App == "") then
-              json.App = "Apple TV"
-              local new_body = cjson.encode(json)
+            if body then
+              local cjson = require "cjson"
+              local ok, json = pcall(cjson.decode, body)
               
-              ngx.req.set_body_data(new_body)
-              ngx.req.set_header("Content-Length", string.len(new_body))
+              if ok and json and (not json.App or json.App == "") then
+                json.App = "Apple TV"
+                local new_body = cjson.encode(json)
+                ngx.req.set_body_data(new_body)
+                ngx.req.set_header("Content-Length", string.len(new_body))
+              end
             end
           end
-        end
+        }
       }
 spec:
   ingressClassName: nginx
