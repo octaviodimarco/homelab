@@ -35,12 +35,22 @@ metadata:
     # incluyendo Authorization y X-Emby-Authorization (requiere enable-underscores-in-headers)
     # Fix para Apple TV: inyecta el parámetro App en el body JSON si falta en /Users/AuthenticateByName
     # Requiere annotations-risk-level: Critical en el nginx ingress controller
+    # Habilita buffering solo para el endpoint de autenticación
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      access_by_lua_block {
+      set $auth_endpoint 0;
+      if ($request_uri = "/Users/AuthenticateByName") {
+        set $auth_endpoint 1;
+      }
+      if ($request_method = POST) {
+        set $auth_endpoint "${auth_endpoint}1";
+      }
+      if ($auth_endpoint = "11") {
+        proxy_request_buffering on;
+      }
+      rewrite_by_lua_block {
         -- Solo interceptamos si es la URL de auth y es POST
         if ngx.var.uri == "/Users/AuthenticateByName" and ngx.var.request_method == "POST" then
-          -- IMPORTANTE: Forzamos la lectura del body aquí mismo
-          -- Esto hace el efecto de "proxy_request_buffering on" solo para este script
+          -- Forzamos la lectura del body
           ngx.req.read_body()
           local body = ngx.req.get_body_data()
           
