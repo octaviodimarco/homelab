@@ -28,3 +28,5 @@ spec:
         # Allow snippet annotations (configuration-snippet, server-snippet) for custom nginx config
         # Required for Jellyfin Apple TV authentication fix
         allow-snippet-annotations: "true"
+        # Set annotations risk level to Critical to allow high-risk annotations like snippets
+        annotations-risk-level: "Critical"
