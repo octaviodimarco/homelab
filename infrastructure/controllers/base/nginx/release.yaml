@@ -25,3 +25,6 @@ spec:
       config:
         # Enable underscores in headers to allow X-Emby-Authorization header
         enable-underscores-in-headers: "true"
+        # Allow snippet annotations (configuration-snippet, server-snippet) for custom nginx config
+        # Required for Jellyfin Apple TV authentication fix
+        allow-snippet-annotations: "true"
