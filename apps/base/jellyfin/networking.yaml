@@ -36,7 +36,7 @@ metadata:
     # Fix para Apple TV: inyecta el parámetro App en el body JSON si falta en /Users/AuthenticateByName
     # Requiere annotations-risk-level: Critical en el nginx ingress controller
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite_by_lua_block {
+      access_by_lua_block {
         -- Solo interceptamos si es la URL de auth y es POST
         if ngx.var.uri == "/Users/AuthenticateByName" and ngx.var.request_method == "POST" then
           -- Forzamos la lectura del body (esto habilita buffering automáticamente)
