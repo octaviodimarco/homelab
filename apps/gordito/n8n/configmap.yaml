@@ -12,3 +12,11 @@ data:
   N8N_PORT: "5678"
   N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
   N8N_HOST: "n8n.dimarco-server.site"
+  N8N_METRICS: "true"
+  # OAuth2/OIDC Configuration for Authentik
+  N8N_AUTHENTICATION_METHOD: "oidc"
+  N8N_OIDC_ISSUER: "https://authentik.dimarco-server.site/application/o/n8n/"
+  N8N_OIDC_AUTHORIZATION_URL: "https://authentik.dimarco-server.site/application/o/n8n/authorize/"
+  N8N_OIDC_TOKEN_URL: "https://authentik.dimarco-server.site/application/o/n8n/token/"
+  N8N_OIDC_USER_INFO_URL: "https://authentik.dimarco-server.site/application/o/n8n/userinfo/"
+  N8N_OIDC_ISSUER_BASE_URL: "https://authentik.dimarco-server.site"
