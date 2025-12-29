@@ -6,4 +6,3 @@ resources:
   - networking.yaml
   - deployment.yaml
   - storage.yaml
-  - servicemonitor.yaml
