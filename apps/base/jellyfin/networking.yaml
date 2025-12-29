@@ -43,9 +43,6 @@ metadata:
       if ($request_method = POST) {
         set $auth_path "${auth_path}1";
       }
-      if ($auth_path = "11") {
-        proxy_request_buffering on;
-      }
       access_by_lua_block {
         if ngx.var.uri == "/Users/AuthenticateByName" and ngx.var.request_method == "POST" then
           ngx.log(ngx.ERR, "[JELLYFIN-FIX] Intercepting auth request")
