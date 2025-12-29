@@ -26,6 +26,11 @@ spec:
       enabled: true
       auth:
         enabled: false
+      master:
+        persistence:
+          enabled: true
+          storageClass: nfs-csi
+          size: 1Gi
     # Configuración de Authentik
     authentik:
       error_reporting:
