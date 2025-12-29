@@ -21,20 +21,9 @@ spec:
     # Configuración de PostgreSQL (usaremos la base de datos del cluster data)
     postgresql:
       enabled: false
-    # Configuración de Redis
+    # Configuración de Redis (usamos Redis externo en LXC)
     redis:
-      enabled: true
-      auth:
-        enabled: false
-      image:
-        registry: docker.io
-        repository: bitnami/redis
-        tag: 7.4.1-debian-12-r1
-      master:
-        persistence:
-          enabled: true
-          storageClass: nfs-csi
-          size: 1Gi
+      enabled: false
     # Configuración de Authentik
     authentik:
       error_reporting:
@@ -72,7 +61,7 @@ spec:
         - name: AUTHENTIK_POSTGRESQL__NAME
           value: "authentik"
         - name: AUTHENTIK_REDIS__HOST
-          value: "authentik-redis-master"
+          value: "192.168.1.33"
         - name: AUTHENTIK_REDIS__PORT
           value: "6379"
     # Worker
@@ -108,7 +97,7 @@ spec:
         - name: AUTHENTIK_POSTGRESQL__NAME
           value: "authentik"
         - name: AUTHENTIK_REDIS__HOST
-          value: "authentik-redis-master"
+          value: "192.168.1.33"
         - name: AUTHENTIK_REDIS__PORT
           value: "6379"
 
