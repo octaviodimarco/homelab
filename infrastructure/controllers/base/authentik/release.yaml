@@ -1,0 +1,105 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: authentik
+      version: "2024.*"
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: authentik
+      interval: 12h
+  install:
+    createNamespace: true
+    crds: CreateReplace
+  values:
+    # Configuración de PostgreSQL (usaremos la base de datos del cluster data)
+    postgresql:
+      enabled: false
+    # Configuración de Redis
+    redis:
+      enabled: true
+      auth:
+        enabled: false
+    # Configuración de Authentik
+    authentik:
+      error_reporting:
+        enabled: false
+    # Configuración del servidor
+    server:
+      replicas: 1
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "250m"
+        limits:
+          memory: "2Gi"
+          cpu: "1000m"
+      env:
+        - name: AUTHENTIK_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: secret_key
+        - name: AUTHENTIK_POSTGRESQL__HOST
+          value: "pg-authentik.data.dimarco-server.site"
+        - name: AUTHENTIK_POSTGRESQL__PORT
+          value: "5432"
+        - name: AUTHENTIK_POSTGRESQL__USER
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: postgres_user
+        - name: AUTHENTIK_POSTGRESQL__PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: postgres_password
+        - name: AUTHENTIK_POSTGRESQL__NAME
+          value: "authentik"
+        - name: AUTHENTIK_REDIS__HOST
+          value: "authentik-redis-master"
+        - name: AUTHENTIK_REDIS__PORT
+          value: "6379"
+    # Worker
+    worker:
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "100m"
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+      env:
+        - name: AUTHENTIK_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: secret_key
+        - name: AUTHENTIK_POSTGRESQL__HOST
+          value: "pg-authentik.data.dimarco-server.site"
+        - name: AUTHENTIK_POSTGRESQL__PORT
+          value: "5432"
+        - name: AUTHENTIK_POSTGRESQL__USER
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: postgres_user
+        - name: AUTHENTIK_POSTGRESQL__PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: postgres_password
+        - name: AUTHENTIK_POSTGRESQL__NAME
+          value: "authentik"
+        - name: AUTHENTIK_REDIS__HOST
+          value: "authentik-redis-master"
+        - name: AUTHENTIK_REDIS__PORT
+          value: "6379"
+
