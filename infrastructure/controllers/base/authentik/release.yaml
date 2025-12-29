@@ -26,6 +26,10 @@ spec:
       enabled: true
       auth:
         enabled: false
+      image:
+        registry: docker.io
+        repository: bitnami/redis
+        tag: 7.4.1-debian-12-r1
       master:
         persistence:
           enabled: true
