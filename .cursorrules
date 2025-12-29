@@ -1,0 +1,113 @@
+# Flux GitOps Homelab - Cursor Rules
+
+## Project Context
+
+Multi-cluster Kubernetes GitOps homelab using Flux CD with Kustomize base/overlay pattern:
+- **Clusters**: `gordito` (apps), `data` (databases)
+- **GitOps**: Flux CD automation
+- **Secrets**: External Secrets Operator + Infisical (never commit plain secrets)
+- **Infrastructure**: Helm releases for controllers, Kustomize for apps
+
+## Commits
+
+**CRITICAL:** All commit messages MUST be in English and follow Conventional Commits format.
+
+**Format:** `<type>(<scope>): <subject>` | Body for breaking/critical changes | Footer for breaking changes/issues
+
+**Rules:** Subject max 72 chars, lowercase, imperative, no period. Body required for breaking changes, critical configs, version updates. **Always write commit messages in English, never in Spanish or other languages.**
+
+**Types for GitOps:**
+
+| Type | Use Case | Example |
+|------|----------|---------|
+| `feat` | New app/service/infrastructure component | `feat(apps/jellyfin): add GPU passthrough support` |
+| `fix` | Configuration or deployment correction | `fix(infra/cert-manager): correct cluster issuer config` |
+| `update` | Version updates (charts, images, deps) | `update(flux): bump fluxcd controllers to v2.2.0` |
+| `config` | Config changes without functionality change | `config(storage): increase postgresql pvc to 20Gi` |
+| `refactor` | Manifest restructuring (no behavior change) | `refactor(apps): consolidate base kustomizations` |
+| `docs` | Documentation only | `docs: update architecture diagram` |
+| `chore` | Maintenance (cleanup, reorganization) | `chore(deps): update nginx ingress to 4.14.1` |
+| `revert` | Revert previous change | `revert(infra/nginx): rollback load balancer IP change` |
+
+**Scopes:** `apps/<app-name>`, `infra/<component>`, `db/<database>`, `monitoring/<component>`, `cluster/<cluster-name>`
+
+## Branching
+
+**Strategy:** Simplified for solo developer workflow | Naming: `<type>/<short-description>` (kebab-case)
+
+| Type | Purpose | Examples |
+|------|---------|----------|
+| `feature/` | New functionality/service | `feature/add-home-assistant`, `feature/ollama-integration` |
+| `fix/` | Bug fixes | `fix/traefik-routing`, `fix/jellyfin-storage-issue` |
+| `update/` | Version updates | `update/k3s-v1-28`, `update/flux-controllers` |
+| `experiment/` | Tests that may not merge | `experiment/argocd-migration` |
+
+**Workflow:** `main` (protected, always deployable). Work in feature branches, merge with `--squash`, delete after merge. Minor changes: direct commit to `main` allowed.
+
+## Structure & Naming
+
+**Directory Pattern:**
+```
+apps/base/<app-name>/              # Base manifests
+apps/<cluster>/<app-name>/         # Cluster overlays
+infrastructure/controllers/base/   # Base HelmReleases
+infrastructure/controllers/<cluster>/  # Cluster overlays
+infrastructure/configs/<cluster>/  # Cluster ConfigMaps, Secrets
+clusters/<cluster>/                # Cluster root Kustomizations
+databases/<cluster>/<db-name>/     # Database definitions
+```
+
+**File Separation:** `namespace.yaml`, `deployment.yaml`, `networking.yaml`, `storage.yaml`, `secrets.yaml`, `kustomization.yaml`
+
+**Naming:** Resources lowercase kebab-case. Namespaces match app name. PVCs: `<app-name>-<purpose>`. Services: `<app-name>-svc`. Ingress: `<app-name>-ingress`. ExternalSecrets: `<app-name>-<purpose>`.
+
+## Flux CD Resources
+
+| Resource | Namespace | Key Configuration |
+|----------|-----------|-------------------|
+| **Kustomization** | `flux-system` | `interval: 1h`, `prune: true`, `dependsOn` for ordering, `path` relative to repo root |
+| **HelmRelease** | `flux-system` or component | `interval: 10m-30m`, `install.createNamespace: true`, `install.crds: CreateReplace` |
+| **HelmRepository** | `flux-system` | `interval: 1h-24h` (24h stable, 1h frequent), define before HelmRelease |
+| **GitRepository** | `flux-system` | Main: `interval: 1m`, `ref.branch: main` |
+
+**Patterns:** Use `dependsOn` to order reconciliation (controllers before configs). HelmRelease requires HelmRepository first.
+
+## Kubernetes Resources
+
+**Deployments:** Always include `livenessProbe`, `readinessProbe`, `startupProbe`. Set `requests` and `limits` (CPU/memory). Strategy: `Recreate` (stateful), `RollingUpdate` (stateless). Avoid `privileged: true` unless required (e.g., GPU passthrough).
+
+**Services & Ingress:** Service: `<app-name>-svc`. Ingress: `ingressClassName: nginx`. TLS: `cert-manager.io/cluster-issuer: letsencrypt-production`. External DNS: `external-dns.kubernetes.io/managed: "true"` or `ignore: "true"`. Streaming: `proxy-body-size: "0"`, `proxy-buffering: "off"`, extended timeouts.
+
+**Storage:** `storageClassName`: `nfs-csi`, `nfs-csi-data`, `nfs-csi-media`. Access: `ReadWriteOnce` (single pod), `ReadWriteMany` (multiple pods).
+
+**Secrets:** **Never commit plain secrets to Git.** Use `ExternalSecret` (external-secrets.io/v1), `secretStoreRef.name: infisical`, `kind: ClusterSecretStore`, `refreshInterval: 1h`, place in same namespace as consumer.
+
+## Kustomize Patterns
+
+**Base:**
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: <app-name>
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - networking.yaml
+  - storage.yaml
+```
+
+**Overlay:** Reference base with `resources: ["../../base/<app-name>"]`. Use `patchesStrategicMerge` or `patches` for modifications. Add cluster-specific ConfigMaps, Secrets, patches.
+
+## Best Practices
+
+**YAML:** 2 spaces indentation, no tabs. Alphabetical keys in `resources:` lists. Remove trailing whitespace. Comments: Spanish allowed in YAML, English for commits/code.
+
+**Resource Consistency:** Match labels `app: <app-name>` across Deployment, Service, pod template. Same namespace for related resources. Consistent naming.
+
+**Multi-Cluster:** Base resources cluster-agnostic. Overlays cluster-specific (IPs, storage classes). Separate infrastructure controllers/configs per cluster.
+
+**Flux Reconciliation:** Use `dependsOn` for ordering (controllers before configs). Intervals based on update frequency. `prune: true` for automatic cleanup.
+
+**Helm Charts:** Prefer `values.yaml` files over inline values. Document non-default values. Versioning: `1.*` (minor updates), specific version (stability).
+
+**Documentation:** Update README.md for architectural changes. Document non-standard configurations and annotations.
