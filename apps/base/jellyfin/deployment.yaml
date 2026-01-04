@@ -70,7 +70,7 @@ spec:
               name: http
           volumeMounts:
             - name: nginx-config
-              mountPath: /etc/nginx/nginx.conf
+              mountPath: /usr/local/openresty/nginx/conf/nginx.conf
               subPath: nginx.conf
           resources:
             requests:
