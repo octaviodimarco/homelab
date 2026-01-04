@@ -49,15 +49,17 @@ spec:
                 echo "Updated existing HttpServerPortNumber to 8097"
               else
                 # Add HttpServerPortNumber after <ServerConfiguration> tag
-                # Use a temporary file approach to avoid YAML multiline issues
-                TEMP_FILE=$(mktemp)
-                awk '/<ServerConfiguration>/ { print; print "    <HttpServerPortNumber>8097</HttpServerPortNumber>"; next } { print }' "$CONFIG_FILE" > "$TEMP_FILE"
-                mv "$TEMP_FILE" "$CONFIG_FILE"
+                # Use sed with a simpler approach that works in busybox
+                # Create a temp file with the new line
+                echo "    <HttpServerPortNumber>8097</HttpServerPortNumber>" > /tmp/port_line.txt
+                # Insert after ServerConfiguration line
+                sed -i '/<ServerConfiguration>/r /tmp/port_line.txt' "$CONFIG_FILE"
+                rm -f /tmp/port_line.txt
                 echo "Added HttpServerPortNumber=8097 to config"
               fi
               
-              # Verify the change
-              if grep -q "<HttpServerPortNumber>8097</HttpServerPortNumber>" "$CONFIG_FILE"; then
+              # Verify the change (check for port 8097 with flexible whitespace)
+              if grep -q "HttpServerPortNumber.*8097" "$CONFIG_FILE"; then
                 echo "SUCCESS: Jellyfin configured to listen on port 8097"
               else
                 echo "ERROR: Failed to configure port. Restoring backup..."
