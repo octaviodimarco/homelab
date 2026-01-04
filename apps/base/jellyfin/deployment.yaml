@@ -49,9 +49,10 @@ spec:
                 echo "Updated existing HttpServerPortNumber to 8097"
               else
                 # Add HttpServerPortNumber after <ServerConfiguration> tag
-                # Use a more robust approach with awk or sed
-                sed -i '/<ServerConfiguration>/a\
-    <HttpServerPortNumber>8097<\/HttpServerPortNumber>' "$CONFIG_FILE"
+                # Use a temporary file approach to avoid YAML multiline issues
+                TEMP_FILE=$(mktemp)
+                awk '/<ServerConfiguration>/ { print; print "    <HttpServerPortNumber>8097</HttpServerPortNumber>"; next } { print }' "$CONFIG_FILE" > "$TEMP_FILE"
+                mv "$TEMP_FILE" "$CONFIG_FILE"
                 echo "Added HttpServerPortNumber=8097 to config"
               fi
               
