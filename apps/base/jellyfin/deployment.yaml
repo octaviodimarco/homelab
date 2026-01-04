@@ -14,18 +14,73 @@ spec:
       labels:
         app: jellyfin
     spec:
+      initContainers:
+        - name: configure-jellyfin-port
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              CONFIG_FILE="/config/config/system.xml"
+              
+              # Wait for config directory to be available (with timeout)
+              MAX_WAIT=60
+              WAIT_COUNT=0
+              while [ ! -f "$CONFIG_FILE" ] && [ $WAIT_COUNT -lt $MAX_WAIT ]; do
+                echo "Waiting for Jellyfin config to be available... ($WAIT_COUNT/$MAX_WAIT)"
+                sleep 2
+                WAIT_COUNT=$((WAIT_COUNT + 2))
+              done
+              
+              if [ ! -f "$CONFIG_FILE" ]; then
+                echo "ERROR: Config file not found after $MAX_WAIT seconds"
+                exit 1
+              fi
+              
+              # Backup original config
+              cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
+              
+              # Modify system.xml to change HTTP port to 8097
+              # Check if HttpServerPortNumber exists
+              if grep -q "<HttpServerPortNumber>" "$CONFIG_FILE"; then
+                # Replace existing port
+                sed -i 's/<HttpServerPortNumber>[0-9]*<\/HttpServerPortNumber>/<HttpServerPortNumber>8097<\/HttpServerPortNumber>/' "$CONFIG_FILE"
+                echo "Updated existing HttpServerPortNumber to 8097"
+              else
+                # Add HttpServerPortNumber after <ServerConfiguration> tag
+                # Use a more robust approach with awk or sed
+                sed -i '/<ServerConfiguration>/a\
+    <HttpServerPortNumber>8097<\/HttpServerPortNumber>' "$CONFIG_FILE"
+                echo "Added HttpServerPortNumber=8097 to config"
+              fi
+              
+              # Verify the change
+              if grep -q "<HttpServerPortNumber>8097</HttpServerPortNumber>" "$CONFIG_FILE"; then
+                echo "SUCCESS: Jellyfin configured to listen on port 8097"
+              else
+                echo "ERROR: Failed to configure port. Restoring backup..."
+                mv "$CONFIG_FILE.backup" "$CONFIG_FILE"
+                exit 1
+              fi
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.5
           securityContext:
             privileged: true
           ports:
+            - containerPort: 8097
+              name: http-internal
+            # Keep 8096 for health checks (will be handled by sidecar)
             - containerPort: 8096
               name: http
           livenessProbe:
             httpGet:
               path: /health
-              port: 8096
+              port: 8097
             initialDelaySeconds: 120
             periodSeconds: 60
             timeoutSeconds: 15
@@ -34,7 +89,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /health
-              port: 8096
+              port: 8097
             initialDelaySeconds: 60
             periodSeconds: 30
             timeoutSeconds: 10
@@ -43,7 +98,7 @@ spec:
           startupProbe:
             httpGet:
               path: /health
-              port: 8096
+              port: 8097
             initialDelaySeconds: 30
             periodSeconds: 15
             timeoutSeconds: 10
@@ -63,7 +118,26 @@ spec:
               mountPath: /media
             - name: device-dri
               mountPath: /dev/dri
+        - name: nginx-sidecar
+          image: openresty/openresty:alpine
+          ports:
+            - containerPort: 8096
+              name: http
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
       volumes:
+        - name: nginx-config
+          configMap:
+            name: jellyfin-nginx-config
         - name: config
           persistentVolumeClaim:
             claimName: jellyfin-config-pvc
