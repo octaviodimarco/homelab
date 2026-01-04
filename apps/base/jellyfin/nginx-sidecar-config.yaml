@@ -70,8 +70,8 @@ data:
                 # Disable request buffering to allow body modification
                 proxy_request_buffering off;
                 
-                # Use access phase to modify body, then proxy
-                access_by_lua_block {
+                # Use rewrite phase to modify body before proxying
+                rewrite_by_lua_block {
                     if ngx.var.request_method == "POST" then
                         ngx.req.read_body()
                         local body = ngx.req.get_body_data()
@@ -87,10 +87,8 @@ data:
                                 if not json.App or json.App == "" then
                                     json.App = "Apple TV"
                                     local new_body = cjson.encode(json)
-                                    -- Reinitialize body with modified content
-                                    ngx.req.init_body(128 * 1024)
-                                    ngx.req.append_body(new_body)
-                                    ngx.req.finish_body()
+                                    -- Set the modified body directly
+                                    ngx.req.set_body_data(new_body)
                                     ngx.req.set_header("Content-Length", string.len(new_body))
                                     ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV, new body: " .. new_body)
                                 end
