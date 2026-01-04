@@ -33,44 +33,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     # NGINX Ingress Controller pasa todos los headers del cliente al upstream por defecto
     # incluyendo Authorization y X-Emby-Authorization (requiere enable-underscores-in-headers)
-    # Fix para Apple TV: inyecta el parámetro App en el body JSON si falta en /Users/AuthenticateByName
-    # Requiere annotations-risk-level: Critical en el nginx ingress controller
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      set $auth_path 0;
-      if ($request_uri = "/Users/AuthenticateByName") {
-        set $auth_path 1;
-      }
-      if ($request_method = POST) {
-        set $auth_path "${auth_path}1";
-      }
-      access_by_lua_block {
-        if ngx.var.uri == "/Users/AuthenticateByName" and ngx.var.request_method == "POST" then
-          ngx.log(ngx.ERR, "[JELLYFIN-FIX] Intercepting auth request")
-          ngx.req.read_body()
-          local body = ngx.req.get_body_data()
-          
-          if body then
-            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body length: " .. string.len(body))
-            local cjson = require "cjson"
-            local ok, json = pcall(cjson.decode, body)
-            
-            if ok and json then
-              ngx.log(ngx.ERR, "[JELLYFIN-FIX] JSON parsed, App=" .. tostring(json.App))
-              if not json.App or json.App == "" then
-                json.App = "Apple TV"
-                local new_body = cjson.encode(json)
-                ngx.req.set_body_data(new_body)
-                ngx.req.set_header("Content-Length", string.len(new_body))
-                ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV")
-              end
-            else
-              ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to parse JSON: " .. tostring(json))
-            end
-          else
-            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body is nil or empty")
-          end
-        end
-      }
+    # Note: Previous Lua script removed as it was not executing (Lua module not available in standard nginx ingress controller)
 spec:
   ingressClassName: nginx
   rules:
