@@ -86,7 +86,10 @@ data:
                                 if not json.App or json.App == "" then
                                     json.App = "Apple TV"
                                     local new_body = cjson.encode(json)
-                                    ngx.req.set_body_data(new_body)
+                                    -- Use init_body/append_body/finish_body pattern
+                                    ngx.req.init_body(128 * 1024)
+                                    ngx.req.append_body(new_body)
+                                    ngx.req.finish_body()
                                     ngx.req.set_header("Content-Length", string.len(new_body))
                                     ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV, new body: " .. new_body)
                                 end
