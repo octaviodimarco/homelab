@@ -126,8 +126,17 @@ data:
                     end
                     
                     -- Make subrequest to internal proxy location
+                    local method = ngx.HTTP_GET
+                    if ngx.var.request_method == "POST" then
+                        method = ngx.HTTP_POST
+                    elseif ngx.var.request_method == "PUT" then
+                        method = ngx.HTTP_PUT
+                    elseif ngx.var.request_method == "DELETE" then
+                        method = ngx.HTTP_DELETE
+                    end
+                    
                     local res = ngx.location.capture("/_internal_jellyfin_proxy", {
-                        method = ngx.var.request_method,
+                        method = method,
                         body = body_to_send or ngx.req.get_body_data(),
                         always_forward_body = true,
                         copy_all_vars = true,
