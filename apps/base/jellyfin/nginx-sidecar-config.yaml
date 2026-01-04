@@ -65,43 +65,9 @@ data:
                 proxy_request_buffering off;
             }
 
-            # Intercept authentication requests to inject App parameter
-            location = /Users/AuthenticateByName {
-                # Disable request buffering to allow body modification
-                proxy_request_buffering off;
-                
-                rewrite_by_lua_block {
-                    if ngx.var.request_method == "POST" then
-                        ngx.req.read_body()
-                        local body = ngx.req.get_body_data()
-                        
-                        if body then
-                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Original body: " .. body)
-                            local cjson = require "cjson"
-                            local ok, json = pcall(cjson.decode, body)
-                            
-                            if ok and json then
-                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] JSON parsed, App=" .. tostring(json.App))
-                                -- Inject App parameter if missing or empty
-                                if not json.App or json.App == "" then
-                                    json.App = "Apple TV"
-                                    local new_body = cjson.encode(json)
-                                    -- Use init_body/append_body/finish_body pattern
-                                    ngx.req.init_body(128 * 1024)
-                                    ngx.req.append_body(new_body)
-                                    ngx.req.finish_body()
-                                    ngx.req.set_header("Content-Length", string.len(new_body))
-                                    ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV, new body: " .. new_body)
-                                end
-                            else
-                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to parse JSON: " .. tostring(json))
-                            end
-                        else
-                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body is nil or empty")
-                        end
-                    end
-                }
-                
+            # Internal location for proxying to Jellyfin
+            location = /_jellyfin_proxy {
+                internal;
                 proxy_pass http://127.0.0.1:8096;
                 proxy_http_version 1.1;
                 
@@ -117,8 +83,57 @@ data:
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection "upgrade";
 
-                # Disable buffering (proxy_request_buffering already set above)
+                # Disable buffering
                 proxy_buffering off;
+                proxy_request_buffering off;
+            }
+
+            # Intercept authentication requests to inject App parameter
+            location = /Users/AuthenticateByName {
+                # Force reading request body
+                lua_need_request_body on;
+                
+                content_by_lua_block {
+                    if ngx.var.request_method == "POST" then
+                        ngx.req.read_body()
+                        local body = ngx.req.get_body_data()
+                        
+                        if body then
+                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Original body: " .. body)
+                            local cjson = require "cjson"
+                            local ok, json = pcall(cjson.decode, body)
+                            
+                            if ok and json then
+                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] JSON parsed, App=" .. tostring(json.App))
+                                -- Inject App parameter if missing or empty
+                                if not json.App or json.App == "" then
+                                    json.App = "Apple TV"
+                                    body = cjson.encode(json)
+                                    ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV, new body: " .. body)
+                                end
+                            else
+                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to parse JSON: " .. tostring(json))
+                            end
+                        else
+                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body is nil or empty")
+                        end
+                    end
+                    
+                    -- Make subrequest to internal proxy location with modified body
+                    local res = ngx.location.capture("/_jellyfin_proxy/Users/AuthenticateByName", {
+                        method = ngx.HTTP_POST,
+                        body = body,
+                        always_forward_body = true,
+                        copy_all_vars = false,
+                    })
+                    
+                    -- Forward response
+                    ngx.status = res.status
+                    for k, v in pairs(res.header) do
+                        ngx.header[k] = v
+                    end
+                    ngx.say(res.body)
+                }
             }
         }
     }
