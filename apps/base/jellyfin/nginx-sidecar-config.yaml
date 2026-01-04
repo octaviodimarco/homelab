@@ -114,9 +114,8 @@ data:
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection "upgrade";
 
-                # Disable buffering
+                # Disable buffering (proxy_request_buffering already set above)
                 proxy_buffering off;
-                proxy_request_buffering off;
             }
         }
     }
