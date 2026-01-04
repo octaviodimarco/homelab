@@ -40,12 +40,12 @@ data:
         proxy_read_timeout 3600s;
 
         server {
-            listen 8096;
+            listen 8097;
             server_name _;
 
-            # Proxy all requests to Jellyfin on localhost:8097
+            # Proxy all requests to Jellyfin on localhost:8096 (default port)
             location / {
-                proxy_pass http://127.0.0.1:8097;
+                proxy_pass http://127.0.0.1:8096;
                 proxy_http_version 1.1;
                 
                 # Preserve original headers
