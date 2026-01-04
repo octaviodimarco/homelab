@@ -42,27 +42,38 @@ spec:
               cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
               
               # Modify system.xml to change HTTP port to 8097
-              # Check if HttpServerPortNumber exists
-              if grep -q "<HttpServerPortNumber>" "$CONFIG_FILE"; then
-                # Replace existing port
-                sed -i 's/<HttpServerPortNumber>[0-9]*<\/HttpServerPortNumber>/<HttpServerPortNumber>8097<\/HttpServerPortNumber>/' "$CONFIG_FILE"
+              # Use a simple approach: replace or add the port setting
+              # First, try to replace existing port
+              if grep -q "HttpServerPortNumber" "$CONFIG_FILE"; then
+                # Replace any existing port with 8097
+                sed -i 's/<HttpServerPortNumber>[^<]*<\/HttpServerPortNumber>/<HttpServerPortNumber>8097<\/HttpServerPortNumber>/' "$CONFIG_FILE"
                 echo "Updated existing HttpServerPortNumber to 8097"
               else
-                # Add HttpServerPortNumber after <ServerConfiguration> tag
-                # Use sed with a simpler approach that works in busybox
-                # Create a temp file with the new line
-                echo "    <HttpServerPortNumber>8097</HttpServerPortNumber>" > /tmp/port_line.txt
-                # Insert after ServerConfiguration line
-                sed -i '/<ServerConfiguration>/r /tmp/port_line.txt' "$CONFIG_FILE"
-                rm -f /tmp/port_line.txt
-                echo "Added HttpServerPortNumber=8097 to config"
+                # Add HttpServerPortNumber after <ServerConfiguration> tag using a different method
+                # Use a here-document approach that works in busybox
+                PORT_LINE="    <HttpServerPortNumber>8097</HttpServerPortNumber>"
+                # Find ServerConfiguration line and insert after it
+                LINE_NUM=$(grep -n "<ServerConfiguration>" "$CONFIG_FILE" | cut -d: -f1)
+                if [ -n "$LINE_NUM" ]; then
+                  # Use head and tail to insert the line
+                  head -n "$LINE_NUM" "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+                  echo "$PORT_LINE" >> "$CONFIG_FILE.tmp"
+                  tail -n +$((LINE_NUM + 1)) "$CONFIG_FILE" >> "$CONFIG_FILE.tmp"
+                  mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+                  echo "Added HttpServerPortNumber=8097 to config"
+                else
+                  echo "ERROR: Could not find ServerConfiguration tag"
+                  exit 1
+                fi
               fi
               
-              # Verify the change (check for port 8097 with flexible whitespace)
-              if grep -q "HttpServerPortNumber.*8097" "$CONFIG_FILE"; then
+              # Verify the change (check for port 8097 with flexible matching)
+              if grep -q "8097" "$CONFIG_FILE" && grep -q "HttpServerPortNumber" "$CONFIG_FILE"; then
                 echo "SUCCESS: Jellyfin configured to listen on port 8097"
               else
                 echo "ERROR: Failed to configure port. Restoring backup..."
+                echo "DEBUG: Config file content around port setting:"
+                grep -A 2 -B 2 "HttpServerPortNumber\|ServerConfiguration" "$CONFIG_FILE" || echo "No port setting found"
                 mv "$CONFIG_FILE.backup" "$CONFIG_FILE"
                 exit 1
               fi
