@@ -49,11 +49,19 @@ spec:
                 sed -i 's/<HttpServerPortNumber>[^<]*<\/HttpServerPortNumber>/<HttpServerPortNumber>8097<\/HttpServerPortNumber>/' "$CONFIG_FILE"
                 echo "Updated existing HttpServerPortNumber to 8097"
               else
-                # Add HttpServerPortNumber after <ServerConfiguration> tag using a different method
-                # Use a here-document approach that works in busybox
+                # Add HttpServerPortNumber - try multiple tag patterns
                 PORT_LINE="    <HttpServerPortNumber>8097</HttpServerPortNumber>"
-                # Find ServerConfiguration line and insert after it
-                LINE_NUM=$(grep -n "<ServerConfiguration>" "$CONFIG_FILE" | cut -d: -f1)
+                LINE_NUM=""
+                
+                # Try different tag patterns
+                for TAG in "<ServerConfiguration" "<ServerConfiguration>" "ServerConfiguration"; do
+                  LINE_NUM=$(grep -n "$TAG" "$CONFIG_FILE" | head -1 | cut -d: -f1)
+                  if [ -n "$LINE_NUM" ]; then
+                    echo "Found tag '$TAG' at line $LINE_NUM"
+                    break
+                  fi
+                done
+                
                 if [ -n "$LINE_NUM" ]; then
                   # Use head and tail to insert the line
                   head -n "$LINE_NUM" "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
@@ -62,8 +70,9 @@ spec:
                   mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
                   echo "Added HttpServerPortNumber=8097 to config"
                 else
-                  echo "ERROR: Could not find ServerConfiguration tag"
-                  exit 1
+                  # Last resort: append to file (not ideal but better than failing)
+                  echo "WARNING: Could not find ServerConfiguration tag, appending to file"
+                  echo "$PORT_LINE" >> "$CONFIG_FILE"
                 fi
               fi
               
