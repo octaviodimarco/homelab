@@ -40,7 +40,7 @@ data:
         proxy_read_timeout 3600s;
 
         server {
-            listen 8097;
+            listen 0.0.0.0:8097;
             server_name _;
 
             # Proxy all requests to Jellyfin on localhost:8096 (default port)
