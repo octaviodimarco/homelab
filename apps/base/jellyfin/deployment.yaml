@@ -95,15 +95,12 @@ spec:
           securityContext:
             privileged: true
           ports:
-            - containerPort: 8097
-              name: http-internal
-            # Keep 8096 for health checks (will be handled by sidecar)
             - containerPort: 8096
               name: http
           livenessProbe:
             httpGet:
               path: /health
-              port: 8097
+              port: 8096
             initialDelaySeconds: 120
             periodSeconds: 60
             timeoutSeconds: 15

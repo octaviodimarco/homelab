@@ -46,7 +46,7 @@ spec:
               service:
                 name: jellyfin-svc
                 port:
-                  name: http
+                  number: 8096
   tls:
     - hosts:
         - "jellyfin.dimarco-server.site"
