@@ -7,7 +7,7 @@ spec:
   interval: 5m
   url: ssh://git@github.com/octaviodimarco/homelab-private.git
   ref:
-    branch: feature/add-arr-stack
+    branch: main
   secretRef:
     name: private-repo-deploy-key
   recurseSubmodules: true
