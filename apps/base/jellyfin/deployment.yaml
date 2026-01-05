@@ -14,6 +14,53 @@ spec:
       labels:
         app: jellyfin
     spec:
+      initContainers:
+        - name: enable-legacy-auth
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              CONFIG_FILE="/config/config/system.xml"
+              
+              # Wait for config directory to be available
+              MAX_WAIT=120
+              WAIT_COUNT=0
+              while [ ! -f "$CONFIG_FILE" ] && [ $WAIT_COUNT -lt $MAX_WAIT ]; do
+                echo "Waiting for Jellyfin config to be available... ($WAIT_COUNT/$MAX_WAIT seconds)"
+                sleep 5
+                WAIT_COUNT=$((WAIT_COUNT + 5))
+              done
+              
+              if [ ! -f "$CONFIG_FILE" ]; then
+                echo "WARNING: system.xml not found. Jellyfin will create it on first start."
+                echo "The EnableLegacyAuthorization setting will need to be applied after first start."
+                exit 0
+              fi
+              
+              # Backup original config
+              cp "$CONFIG_FILE" "$CONFIG_FILE.backup.$(date +%s)" || true
+              
+              # Replace EnableLegacyAuthorization if it exists
+              if grep -q "<EnableLegacyAuthorization>" "$CONFIG_FILE"; then
+                sed -i 's/<EnableLegacyAuthorization>.*<\/EnableLegacyAuthorization>/<EnableLegacyAuthorization>true<\/EnableLegacyAuthorization>/' "$CONFIG_FILE"
+                echo "Updated EnableLegacyAuthorization to true"
+              else
+                echo "WARNING: EnableLegacyAuthorization tag not found in system.xml"
+                echo "The file may need to be edited manually or Jellyfin needs to initialize first."
+              fi
+              
+              # Verify the change
+              if grep -q "<EnableLegacyAuthorization>true</EnableLegacyAuthorization>" "$CONFIG_FILE"; then
+                echo "SUCCESS: EnableLegacyAuthorization is set to true"
+              else
+                echo "WARNING: Could not verify EnableLegacyAuthorization=true"
+                echo "Current value:"
+                grep "<EnableLegacyAuthorization>" "$CONFIG_FILE" || echo "Tag not found"
+              fi
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.5
