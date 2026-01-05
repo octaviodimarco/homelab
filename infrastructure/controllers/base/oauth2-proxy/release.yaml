@@ -1,0 +1,95 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: oauth2-proxy
+      version: "7.*"
+      sourceRef:
+        kind: HelmRepository
+        name: oauth2-proxy
+        namespace: oauth2-proxy
+      interval: 12h
+  install:
+    createNamespace: true
+    crds: CreateReplace
+  values:
+    config:
+      # OIDC Provider Configuration (Pocket ID)
+      # clientID, clientSecret, cookieSecret, and oidcIssuerURL will be read from existingSecret
+      provider: "oidc"
+      # oidcIssuerURL will be set via environment variable from secret
+      # Cookie configuration
+      cookieName: "_oauth2_proxy_jellyfin"
+      cookieSecure: true
+      cookieHttpOnly: true
+      cookieSameSite: "lax"
+      cookieDomain: ".dimarco-server.site"
+      # Redirect configuration
+      redirectURL: "https://jellyfin.dimarco-server.site/oauth2/callback"
+      # Whitelist domains for cookies
+      whitelistDomains:
+        - ".dimarco-server.site"
+      # Email configuration (optional)
+      emailDomains:
+        - "*"
+      # Scope
+      scope: "openid email profile"
+      # Pass user info to upstream
+      passUserHeaders: true
+      passAccessToken: true
+      # Set X-Forwarded-* headers
+      setXForwardedFor: true
+      setXRealIP: true
+      # Skip SSL verification (only if needed for internal communication)
+      skipOIDCDiscovery: false
+      # Reverse proxy mode - oauth2-proxy will proxy all requests to Jellyfin
+      reverseProxy: true
+      # Skip authentication for native client paths (Apple TV, mobile apps, etc.)
+      skipAuthRegex:
+        - "^/emby/.*"
+        - "^/Users/.*"
+        - "^/Items/.*"
+        - "^/Playback/.*"
+        - "^/Sessions/.*"
+        - "^/System/.*"
+        - "^/Videos/.*"
+        - "^/Audio/.*"
+        - "^/Images/.*"
+        - "^/web/.*"
+        - "^/health"
+      # Upstream configuration - proxy to Jellyfin
+      upstreams:
+        - http://jellyfin-svc.jellyfin.svc.cluster.local:8096/
+    # Service configuration
+    service:
+      type: ClusterIP
+      port: 4180
+    # Resources
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+    # Secret configuration - will be created by ExternalSecret
+    # The chart will read from existing secret named 'oauth2-proxy'
+    existingSecret: "oauth2-proxy-secrets"
+    # Map secret keys to oauth2-proxy environment variables
+    existingSecretKeys:
+      clientID: "client_id"
+      clientSecret: "client_secret"
+      cookieSecret: "cookie_secret"
+    # Extra environment variables for Pocket ID OIDC issuer URL
+    extraEnv:
+      - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-secrets
+            key: oidc_issuer_url
+
