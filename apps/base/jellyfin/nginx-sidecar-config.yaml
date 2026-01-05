@@ -67,76 +67,67 @@ data:
 
             # Intercept authentication requests to inject App parameter
             location = /Users/AuthenticateByName {
-                # Use content phase to modify body and make HTTP request directly
-                content_by_lua_block {
-                    local http = require "resty.http"
-                    local httpc = http.new()
-                    
-                    -- Read original request body
-                    ngx.req.read_body()
-                    local body = ngx.req.get_body_data()
-                    local body_to_send = body
-                    
-                    if body and ngx.var.request_method == "POST" then
-                        ngx.log(ngx.ERR, "[JELLYFIN-FIX] Original body: " .. body)
-                        local cjson = require "cjson"
-                        local ok, json = pcall(cjson.decode, body)
+                # Disable request buffering to allow body modification
+                proxy_request_buffering off;
+                
+                # Use access phase to modify body before proxying
+                access_by_lua_block {
+                    if ngx.var.request_method == "POST" then
+                        ngx.req.read_body()
+                        local body = ngx.req.get_body_data()
                         
-                        if ok and json then
-                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] JSON parsed, App=" .. tostring(json.App) .. ", Username=" .. tostring(json.Username))
-                            -- Inject App parameter if missing or empty
-                            if not json.App or json.App == "" then
-                                json.App = "Apple TV"
-                                body_to_send = cjson.encode(json)
-                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV, new body: " .. body_to_send)
+                        if body then
+                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Original body: " .. body)
+                            local cjson = require "cjson"
+                            local ok, json = pcall(cjson.decode, body)
+                            
+                            if ok and json then
+                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] JSON parsed, App=" .. tostring(json.App) .. ", Username=" .. tostring(json.Username))
+                                -- Inject App parameter if missing or empty
+                                if not json.App or json.App == "" then
+                                    json.App = "Apple TV"
+                                    local new_body = cjson.encode(json)
+                                    ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV, new body: " .. new_body)
+                                    
+                                    -- Store modified body in a variable for rewrite phase
+                                    ngx.ctx.modified_body = new_body
+                                    ngx.ctx.content_length = string.len(new_body)
+                                end
+                            else
+                                ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to parse JSON")
                             end
                         else
-                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to parse JSON")
+                            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body is nil or empty")
                         end
-                    end
-                    
-                    -- Prepare headers
-                    local headers = {}
-                    for k, v in pairs(ngx.req.get_headers()) do
-                        if k ~= "content-length" and k ~= "host" then
-                            headers[k] = v
-                        end
-                    end
-                    headers["Content-Type"] = "application/json"
-                    headers["Content-Length"] = string.len(body_to_send or "")
-                    headers["Host"] = ngx.var.host
-                    headers["X-Real-IP"] = ngx.var.remote_addr
-                    headers["X-Forwarded-For"] = ngx.var.proxy_add_x_forwarded_for or ngx.var.remote_addr
-                    headers["X-Forwarded-Proto"] = ngx.var.scheme
-                    headers["X-Forwarded-Host"] = ngx.var.host
-                    headers["X-Forwarded-Port"] = ngx.var.server_port
-                    
-                    -- Make HTTP request to Jellyfin
-                    local res, err = httpc:request_uri("http://127.0.0.1:8096/Users/AuthenticateByName", {
-                        method = ngx.var.request_method,
-                        headers = headers,
-                        body = body_to_send,
-                    })
-                    
-                    if not res then
-                        ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to request: " .. tostring(err))
-                        ngx.status = 500
-                        ngx.say("Internal Server Error")
-                        return
-                    end
-                    
-                    -- Forward response
-                    ngx.status = res.status
-                    for k, v in pairs(res.headers) do
-                        if k ~= "content-length" then
-                            ngx.header[k] = v
-                        end
-                    end
-                    if res.body then
-                        ngx.header["Content-Length"] = string.len(res.body)
-                        ngx.say(res.body)
                     end
                 }
+                
+                # Use rewrite phase to set modified body
+                rewrite_by_lua_block {
+                    if ngx.ctx.modified_body then
+                        ngx.req.set_body_data(ngx.ctx.modified_body)
+                        ngx.req.set_header("Content-Length", ngx.ctx.content_length)
+                        ngx.log(ngx.ERR, "[JELLYFIN-FIX] Set modified body in rewrite phase")
+                    end
+                }
+                
+                proxy_pass http://127.0.0.1:8096;
+                proxy_http_version 1.1;
+                
+                # Preserve original headers
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Port $server_port;
+
+                # WebSocket support
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+
+                # Disable buffering
+                proxy_buffering off;
             }
         }
     }
