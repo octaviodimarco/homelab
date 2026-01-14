@@ -1,0 +1,38 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: kasm-db
+  namespace: kasm
+spec:
+  description: "PostgreSQL cluster for Kasm Workspaces"
+  instances: 1
+  storage:
+    size: 10Gi
+    storageClass: nfs-csi-data
+
+  bootstrap:
+    initdb:
+      database: kasm
+      owner: kasm
+      secret:
+        name: kasm-db-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kasm-db-lb
+  namespace: kasm
+  annotations:
+    external-dns.kubernetes.io/managed: "true"
+    external-dns.alpha.kubernetes.io/hostname: pg-kasm.data.dimarco-server.site
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: kasm-db
+    cnpg.io/instanceRole: primary
+

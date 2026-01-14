@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kasm-values
+  namespace: kasm
+data:
+  values.yaml: |
+    externalPostgresql:
+      host: pg-kasm.data.dimarco-server.site
+      port: 5432
+      database: kasm
+    externalRedis:
+      port: 6379
+
