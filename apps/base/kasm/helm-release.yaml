@@ -29,22 +29,19 @@ spec:
     persistence:
       storageClass: nfs-csi
     
+    # Public Address
+    publicAddr: kasm.dimarco-server.site
+    
     # Ingress
     ingress:
       enabled: true
-      className: nginx
+      tls: true
+      backendProtocol: http
+      ingressClassName: nginx
       annotations:
         cert-manager.io/cluster-issuer: "letsencrypt-production"
         external-dns.kubernetes.io/ignore: "true"
-      hosts:
-        - host: kasm.dimarco-server.site
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - secretName: kasm-tls
-          hosts:
-            - kasm.dimarco-server.site
+      labels: {}
   valuesFrom:
     - kind: ConfigMap
       name: kasm-values
