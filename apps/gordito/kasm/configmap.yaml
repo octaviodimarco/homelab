@@ -5,6 +5,5 @@ metadata:
   namespace: kasm
 data:
   values.yaml: |
-    # Configuración adicional si es necesaria
-    # La mayoría de la configuración está en el helm-release.yaml base
+    # ConfigMap vacío - toda la configuración está en el helm-release.yaml base
 

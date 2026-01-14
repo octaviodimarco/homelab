@@ -26,6 +26,9 @@ spec:
       port: 5432
       kasmDbName: kasm
       kasmDbUser: kasm
+      kasmDbSecret:
+        name: kasm-db-password
+        key: password
     
     # Storage
     persistence:
@@ -63,6 +66,4 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: kasm-values
-    - kind: Secret
-      name: kasm-helm-values
 
