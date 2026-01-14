@@ -5,10 +5,6 @@ metadata:
   namespace: kasm
 data:
   values.yaml: |
-    externalPostgresql:
-      host: pg-kasm.data.dimarco-server.site
-      port: 5432
-      database: kasm
-    externalRedis:
-      port: 6379
+    # Configuración adicional si es necesaria
+    # La mayoría de la configuración está en el helm-release.yaml base
 

@@ -19,11 +19,13 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
-    # Deshabilitar componentes internos que usaremos externos
-    postgresql:
-      enabled: false
-    redis:
-      enabled: false
+    # Usar base de datos externa (desactiva el StatefulSet interno)
+    database:
+      standalone: true
+      hostname: pg-kasm.data.dimarco-server.site
+      port: 5432
+      kasmDbName: kasm
+      kasmDbUser: kasm
     
     # Storage
     persistence:
