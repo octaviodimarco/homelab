@@ -41,6 +41,7 @@ spec:
     
     # Certificate - Use cert-manager to generate certificates
     certificate:
+      secretName: kasm-tls
       certManager:
         enabled: true
         issuerName: letsencrypt-production
@@ -53,7 +54,6 @@ spec:
       tls: true
       backendProtocol: http
       ingressClassName: nginx
-      secretName: kasm-tls
       annotations:
         cert-manager.io/cluster-issuer: "letsencrypt-production"
         external-dns.kubernetes.io/ignore: "true"
