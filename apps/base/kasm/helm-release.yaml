@@ -29,6 +29,10 @@ spec:
     persistence:
       storageClass: nfs-csi
     
+    # Service - Must be ClusterIP when using ingress
+    service:
+      type: ClusterIP
+    
     # Public Address
     publicAddr: kasm.dimarco-server.site
     
