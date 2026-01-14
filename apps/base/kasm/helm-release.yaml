@@ -39,6 +39,14 @@ spec:
     # Public Address
     publicAddr: kasm.dimarco-server.site
     
+    # Certificate - Use cert-manager to generate certificates
+    certificate:
+      certManager:
+        enabled: true
+        issuerName: letsencrypt-production
+        issuerKind: ClusterIssuer
+        addWildCard: false
+    
     # Ingress
     ingress:
       enabled: true
