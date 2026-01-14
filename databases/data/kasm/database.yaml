@@ -23,9 +23,8 @@ metadata:
   name: kasm-db-lb
   namespace: kasm
   annotations:
-    # Temporarily commented to force External-DNS to recreate the record with new IP
-    # external-dns.kubernetes.io/managed: "true"
-    # external-dns.alpha.kubernetes.io/hostname: pg-kasm.data.dimarco-server.site
+    external-dns.kubernetes.io/managed: "true"
+    external-dns.alpha.kubernetes.io/hostname: pg-kasm.data.dimarco-server.site
 spec:
   type: LoadBalancer
   ports:
