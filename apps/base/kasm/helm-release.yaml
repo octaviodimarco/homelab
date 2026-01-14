@@ -32,6 +32,9 @@ spec:
     # Service - Must be ClusterIP when using ingress
     service:
       type: ClusterIP
+    # Proxy Service - Must also be ClusterIP when using ingress
+    proxyService:
+      type: ClusterIP
     
     # Public Address
     publicAddr: kasm.dimarco-server.site
