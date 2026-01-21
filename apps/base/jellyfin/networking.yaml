@@ -27,50 +27,17 @@ metadata:
     # Buffer settings optimizados para streaming
     nginx.ingress.kubernetes.io/proxy-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    # Aumentar tamaño de buffers para streaming de alta calidad (aunque buffering esté off, se usan para headers)
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    # Enviar chunks inmediatamente sin esperar
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    # Chunked transfer encoding para streaming eficiente
+    nginx.ingress.kubernetes.io/proxy-chunked-transfer-encoding: "on"
     # WebSocket support (Jellyfin requiere WebSockets para algunas funcionalidades)
     nginx.ingress.kubernetes.io/websocket-services: "jellyfin-svc"
     # Headers para reverse proxy (Jellyfin requiere estos para identificar IPs reales)
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
-    # NGINX Ingress Controller pasa todos los headers del cliente al upstream por defecto
-    # incluyendo Authorization y X-Emby-Authorization (requiere enable-underscores-in-headers)
-    # Fix para Apple TV: inyecta el parámetro App en el body JSON si falta en /Users/AuthenticateByName
-    # Requiere annotations-risk-level: Critical en el nginx ingress controller
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      set $auth_path 0;
-      if ($request_uri = "/Users/AuthenticateByName") {
-        set $auth_path 1;
-      }
-      if ($request_method = POST) {
-        set $auth_path "${auth_path}1";
-      }
-      access_by_lua_block {
-        if ngx.var.uri == "/Users/AuthenticateByName" and ngx.var.request_method == "POST" then
-          ngx.log(ngx.ERR, "[JELLYFIN-FIX] Intercepting auth request")
-          ngx.req.read_body()
-          local body = ngx.req.get_body_data()
-          
-          if body then
-            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body length: " .. string.len(body))
-            local cjson = require "cjson"
-            local ok, json = pcall(cjson.decode, body)
-            
-            if ok and json then
-              ngx.log(ngx.ERR, "[JELLYFIN-FIX] JSON parsed, App=" .. tostring(json.App))
-              if not json.App or json.App == "" then
-                json.App = "Apple TV"
-                local new_body = cjson.encode(json)
-                ngx.req.set_body_data(new_body)
-                ngx.req.set_header("Content-Length", string.len(new_body))
-                ngx.log(ngx.ERR, "[JELLYFIN-FIX] Injected App=Apple TV")
-              end
-            else
-              ngx.log(ngx.ERR, "[JELLYFIN-FIX] Failed to parse JSON: " .. tostring(json))
-            end
-          else
-            ngx.log(ngx.ERR, "[JELLYFIN-FIX] Body is nil or empty")
-          end
-        end
-      }
 spec:
   ingressClassName: nginx
   rules:
