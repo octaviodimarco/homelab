@@ -7,5 +7,4 @@ resources:
   - n8n
   - memos
   - ollama
-  - kasm
   - dbgate
