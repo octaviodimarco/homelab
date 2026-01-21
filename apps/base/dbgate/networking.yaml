@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbgate
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: http
+      protocol: TCP
+  selector:
+    app: dbgate
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dbgate-ingress
+  namespace: dbgate
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    external-dns.kubernetes.io/ignore: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "dbgate.dimarco-server.site"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dbgate
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - "dbgate.dimarco-server.site"
+      secretName: dbgate-tls
+

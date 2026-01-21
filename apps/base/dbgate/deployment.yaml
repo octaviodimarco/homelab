@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbgate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbgate
+  template:
+    metadata:
+      labels:
+        app: dbgate
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: dbgate
+          image: dbgate/dbgate:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: DBGATE_BASE_URL
+              value: "https://dbgate.dimarco-server.site"
+            - name: DBGATE_SERVER_PORT
+              value: "3000"
+          volumeMounts:
+            - mountPath: /dbgate/data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: dbgate-data-pvc
+
