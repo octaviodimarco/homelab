@@ -6,5 +6,5 @@ resources:
   - jellyfin
   - n8n
   - memos
-  - ollama
+  # - ollama
   - dbgate
