@@ -71,6 +71,7 @@ A continuación, una lista representativa (en expansión) de las aplicaciones de
 | Linkding      | Gestor de marcadores minimalista                   | Sí                     |
 | Grafana       | Paneles de monitoreo y visualización               | Sí                     |
 | Memos         | Notas y gestión de ideas personales                | Sí                     |
+| Redlib        | Frontend privado para Reddit que permite consumir documentación técnica de comunidades sin el tracking de la plataforma oficial | Sí                     |
 
 
 > Esta tabla crecerá a medida que se integren nuevos servicios (automatización, backups, dashboards, etc.).
