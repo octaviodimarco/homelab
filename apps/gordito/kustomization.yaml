@@ -7,5 +7,5 @@ resources:
   - n8n
   - memos
   # - ollama
-  - redlib
+  # - redlib  # Disabled: Reddit is blocking OAuth client creation
   - dbgate
