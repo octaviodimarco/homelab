@@ -14,25 +14,33 @@ spec:
     spec:
       containers:
         - name: redlib
-          image: quay.io/redlib/redlib:latest
+          image: quay.io/redlib/redlib:v0.36.0
           ports:
             - containerPort: 8080
               name: http
           livenessProbe:
             tcpSocket:
               port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 30
+            initialDelaySeconds: 120
+            periodSeconds: 60
             timeoutSeconds: 10
-            failureThreshold: 5
+            failureThreshold: 10
             successThreshold: 1
           readinessProbe:
             tcpSocket:
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 10
+            successThreshold: 1
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
-            failureThreshold: 5
+            failureThreshold: 30
             successThreshold: 1
           resources:
             requests:
