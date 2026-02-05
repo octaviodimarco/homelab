@@ -18,6 +18,8 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     external-dns.kubernetes.io/ignore: "true"
+    # Required for Redlib when proxying through NGINX (see issue #122)
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
 spec:
   ingressClassName: nginx
   rules:
