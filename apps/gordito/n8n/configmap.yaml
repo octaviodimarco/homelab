@@ -12,3 +12,4 @@ data:
   N8N_PORT: "5678"
   N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
   N8N_HOST: "n8n.dimarco-server.site"
+  WEBHOOK_URL: "https://n8n-server.polko.com.ar/"
