@@ -21,6 +21,8 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     external-dns.kubernetes.io/ignore: "true"
+    # Headers para reverse proxy (n8n requiere estos para identificar IPs reales y protocolo)
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
 spec:
   ingressClassName: nginx
   rules:
