@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: jellyfin-exporter
-          image: rebelcore/jellyfin-exporter:1.4.0
+          image: rebelcore/jellyfin-exporter:v1.5.1
           args:
             - --jellyfin.address=http://jellyfin-svc:8096
             # Habilita el collector "activity" si instalas y configuras el
