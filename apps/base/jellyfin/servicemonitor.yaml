@@ -1,0 +1,17 @@
+# El namespace `jellyfin` ya tiene la label k8s.dimarco-server.site/scrape: "true",
+# por lo que kube-prometheus-stack detecta este ServiceMonitor automáticamente.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: jellyfin-exporter
+  labels:
+    app: jellyfin-exporter
+spec:
+  selector:
+    matchLabels:
+      app: jellyfin-exporter
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 15s

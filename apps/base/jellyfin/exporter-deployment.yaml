@@ -1,0 +1,51 @@
+# Exporter de métricas Prometheus para Jellyfin (per-user: sesiones, streams activos, etc.)
+# https://github.com/rebelcore/jellyfin_exporter
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin-exporter
+  labels:
+    app: jellyfin-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin-exporter
+  template:
+    metadata:
+      labels:
+        app: jellyfin-exporter
+    spec:
+      containers:
+        - name: jellyfin-exporter
+          image: rebelcore/jellyfin-exporter:1.4.0
+          args:
+            - --jellyfin.address=http://jellyfin-svc:8096
+            # Habilita el collector "activity" si instalas y configuras el
+            # plugin "Playback Reporting" en Jellyfin (Keep data for: Forever).
+            # - --collector.activity
+          envFrom:
+            - secretRef:
+                name: jellyfin-exporter-secret
+          ports:
+            - containerPort: 9594
+              name: metrics
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9594
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9594
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

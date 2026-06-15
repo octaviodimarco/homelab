@@ -6,3 +6,7 @@ resources:
   - deployment.yaml
   - storage.yaml
   - networking.yaml
+  - exporter-secret.yaml
+  - exporter-deployment.yaml
+  - exporter-networking.yaml
+  - servicemonitor.yaml

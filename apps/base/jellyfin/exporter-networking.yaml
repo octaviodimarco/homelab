@@ -1,0 +1,15 @@
+# Service interno para que Prometheus scrapee el exporter (sin Ingress: no se expone externamente)
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin-exporter-svc
+  labels:
+    app: jellyfin-exporter
+spec:
+  selector:
+    app: jellyfin-exporter
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 9594
+      targetPort: 9594
