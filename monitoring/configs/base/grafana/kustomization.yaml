@@ -3,3 +3,12 @@ kind: Kustomization
 resources:
   - networking.yaml
   - secret.yaml
+
+configMapGenerator:
+  - name: jellyfin-grafana-dashboard
+    files:
+      - jellyfin.json=dashboards/jellyfin.json
+    options:
+      disableNameSuffixHash: true
+      labels:
+        grafana_dashboard: "1"

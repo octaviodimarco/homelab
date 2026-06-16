@@ -21,8 +21,10 @@ spec:
           image: rebelcore/jellyfin-exporter:v1.5.1
           args:
             - --jellyfin.address=http://jellyfin-svc:8096
-            # Habilita el collector "activity" si instalas y configuras el
-            # plugin "Playback Reporting" en Jellyfin (Keep data for: Forever).
+            - --collector.storage
+            - --collector.tasks
+            - --collector.transcoding
+            # Requiere el plugin "Playback Reporting" en Jellyfin (Keep data for: Forever).
             # - --collector.activity
           envFrom:
             - secretRef:
