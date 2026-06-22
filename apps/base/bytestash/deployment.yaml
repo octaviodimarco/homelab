@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bytestash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bytestash
+  template:
+    metadata:
+      labels:
+        app: bytestash
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: bytestash
+          image: ghcr.io/jordan-dalby/bytestash:latest
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: ALLOW_NEW_ACCOUNTS
+              value: "false"
+            - name: TOKEN_EXPIRY
+              value: "24h"
+          envFrom:
+            - secretRef:
+                name: bytestash-secret
+          volumeMounts:
+            - mountPath: /data/snippets
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: bytestash-data-pvc

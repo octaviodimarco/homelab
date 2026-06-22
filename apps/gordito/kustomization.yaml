@@ -6,6 +6,7 @@ resources:
   - jellyfin
   - n8n
   - memos
+  - bytestash
   # - ollama
   # - redlib  # Disabled: Reddit is blocking OAuth client creation
   - dbgate
