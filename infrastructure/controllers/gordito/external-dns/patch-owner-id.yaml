@@ -9,6 +9,7 @@ data:
     logLevel: info
     domainFilters:
       - "dimarco-server.site"
+      - "tarbi.app"
     extraArgs:
       - --annotation-filter=external-dns.kubernetes.io/managed=true
     txtOwnerId: "k8s-gordito-cluster"
