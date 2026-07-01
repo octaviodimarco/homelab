@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: jellyfin-exporter
-          image: rebelcore/jellyfin-exporter:v1.5.1
+          image: rebelcore/jellyfin-exporter:v1.5.2
           args:
             - --jellyfin.address=http://jellyfin-svc:8096
             - --collector.storage
