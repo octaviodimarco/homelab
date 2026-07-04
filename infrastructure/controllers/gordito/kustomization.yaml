@@ -7,4 +7,5 @@ resources:
   - metallb
   - nginx
   - external-dns
+  - metrics-server
   - goldilocks
