@@ -37,8 +37,16 @@ spec:
                   secretKeyRef:
                     name: immich-db-credentials
                     key: DB_PASSWORD
-              REDIS_HOSTNAME: 192.168.1.33
-              REDIS_PORT: "6379"
+              REDIS_HOSTNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-db-credentials
+                    key: REDIS_HOSTNAME
+              REDIS_PORT:
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-db-credentials
+                    key: REDIS_PORT
               IMMICH_MACHINE_LEARNING_ENABLED: "false"
             resources:
               requests:
