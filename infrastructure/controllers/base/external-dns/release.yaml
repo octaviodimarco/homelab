@@ -13,6 +13,16 @@ spec:
         name: external-dns
         # namespace: external-dns
 
+  values:
+    tolerations:
+      - key: networking-only
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: networking-only
+        operator: Equal
+        value: "true"
+        effect: NoExecute
   valuesFrom:
     - kind: ConfigMap
       name: external-dns-values
