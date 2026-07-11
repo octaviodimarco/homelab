@@ -1,0 +1,46 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-db
+  namespace: immich
+spec:
+  description: "PostgreSQL cluster for Immich with VectorChord support"
+  instances: 1
+  imageName: tensorchord/vchord-postgres:pg17-v1.1.1
+  storage:
+    size: 5Gi
+    storageClass: nfs-csi-data
+
+  postgresql:
+    shared_preload_libraries:
+      - "vchord.so"
+
+  bootstrap:
+    initdb:
+      database: immich
+      owner: immich
+      secret:
+        name: immich-db-credentials
+      postInitSQL:
+        - "CREATE EXTENSION IF NOT EXISTS vchord CASCADE;"
+        - "CREATE EXTENSION IF NOT EXISTS cube;"
+        - "CREATE EXTENSION IF NOT EXISTS earthdistance;"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-db-lb
+  namespace: immich
+  annotations:
+    external-dns.kubernetes.io/managed: "true"
+    external-dns.alpha.kubernetes.io/hostname: pg-immich.data.dimarco-server.site
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: immich-db
+    cnpg.io/instanceRole: primary
