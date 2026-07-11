@@ -68,6 +68,7 @@ A continuación, una lista representativa (en expansión) de las aplicaciones de
 | Aplicación    | Descripción                                        | Expuesta Externamente |
 | :------------ | :------------------------------------------------- | :--------------------- |
 | Jellyfin      | Servidor multimedia para streaming personal        | Sí                     |
+| Immich        | Plataforma de gestión de fotos y videos de código abierto con búsqueda por IA (VectorChord) | Sí |
 | Linkding      | Gestor de marcadores minimalista                   | Sí                     |
 | Grafana       | Paneles de monitoreo y visualización               | Sí                     |
 | Memos         | Notas y gestión de ideas personales                | Sí                     |
