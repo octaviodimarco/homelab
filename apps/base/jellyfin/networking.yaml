@@ -18,28 +18,11 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     external-dns.kubernetes.io/ignore: "true"
-    # Anotación importante para NGINX para permitir archivos grandes (streaming)
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    # Timeouts extendidos para streaming de video (previene desconexiones)
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    # Buffer settings optimizados para streaming
-    nginx.ingress.kubernetes.io/proxy-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    # Aumentar tamaño de buffers para streaming de alta calidad (aunque buffering esté off, se usan para headers)
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
-    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
-    # Enviar chunks inmediatamente sin esperar
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    # Chunked transfer encoding para streaming eficiente
-    nginx.ingress.kubernetes.io/proxy-chunked-transfer-encoding: "on"
-    # WebSocket support (Jellyfin requiere WebSockets para algunas funcionalidades)
-    nginx.ingress.kubernetes.io/websocket-services: "jellyfin-svc"
-    # Headers para reverse proxy (Jellyfin requiere estos para identificar IPs reales)
-    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    # Traefik streamea por defecto: sin limite de body, sin buffering,
+    # websockets y forwarded headers nativos. Los timeouts largos para
+    # streaming estan en el entrypoint websecure (release de traefik).
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: "jellyfin.dimarco-server.site"
       http:

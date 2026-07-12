@@ -22,35 +22,6 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     external-dns.kubernetes.io/ignore: "true"
 spec:
-  ingressClassName: nginx
-  rules:
-    - host: "memos.dimarco-server.site"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: memos
-                port:
-                  name: http
-  tls:
-    - hosts:
-        - "memos.dimarco-server.site"
-      secretName: memos-tls
----
-# Ingress paralelo para la migracion a Traefik. Reusa el secret TLS que
-# emite cert-manager via el ingress nginx (sin annotation de cluster-issuer
-# aca para que no haya dos duenos del certificado). El trafico publico sigue
-# entrando por nginx (.240) hasta el cutover de IPs.
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: memos-ingress-traefik
-  namespace: memos
-  annotations:
-    external-dns.kubernetes.io/ignore: "true"
-spec:
   ingressClassName: traefik
   rules:
     - host: "memos.dimarco-server.site"

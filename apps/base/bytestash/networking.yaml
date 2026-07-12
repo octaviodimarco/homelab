@@ -22,7 +22,7 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     external-dns.kubernetes.io/ignore: "true"
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: "bytestash.dimarco-server.site"
       http:
