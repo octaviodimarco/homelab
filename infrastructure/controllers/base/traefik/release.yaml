@@ -17,6 +17,17 @@ spec:
     deployment:
       replicas: 3
 
+    # Force traefik to run only on networking node
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - k3s-nixos-networking-worker
+
     # Mismo patron que nginx: corre en el nodo de networking via toleration
     tolerations:
       - key: networking-only
