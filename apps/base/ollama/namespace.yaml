@@ -4,3 +4,4 @@ metadata:
   name: ollama
   labels:
     k8s.dimarco-server.site/scrape: "true"
+    goldilocks.fairwinds.com/enabled: "true"

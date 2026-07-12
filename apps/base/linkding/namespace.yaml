@@ -4,3 +4,4 @@ metadata:
   name: linkding
   labels:
     app.kubernetes.io/component: monitoring
+    goldilocks.fairwinds.com/enabled: "true"
