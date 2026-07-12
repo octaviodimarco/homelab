@@ -8,3 +8,6 @@
 
 # Otros
 .env
+
+# Config local de editores/agentes (contiene tokens locales)
+.cursor/
