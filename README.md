@@ -53,7 +53,7 @@ Esto incluye tanto los nodos de control como los workers, garantizando que **tod
 | **Orquestación** | Kubernetes (k3s)                             | Orquesta y gestiona todas las cargas de trabajo en contenedores.          |
 | **GitOps** | Flux CD                                      | Mantiene la sincronización constante y automática entre Git y los clústeres. |
 | **Virtualización** | Proxmox (LXC)                                | Capa de virtualización ligera para contenerización de los nodos del clúster. |
-| **Redes** | MetalLB, NGINX Ingress, ExternalDNS, **DDNS-Updater** | Pila completa para asignación de IPs locales, enrutamiento y DNS dinámico público. |
+| **Redes** | MetalLB, Traefik Ingress, ExternalDNS, **DDNS-Updater** | Pila completa para asignación de IPs locales, enrutamiento y DNS dinámico público. |
 | **Seguridad** | Cert-Manager, External Secrets + Infisical   | Emisión automática de certificados TLS y gestión segura de secretos externos. |
 | **Datos** | CloudNativePG, Synology CSI                  | Gestión experta de PostgreSQL y provisión de almacenamiento persistente. |
 | **Observabilidad** | kube-prometheus-stack                        | Incluye Prometheus y Grafana para la recolección y visualización de métricas. |
