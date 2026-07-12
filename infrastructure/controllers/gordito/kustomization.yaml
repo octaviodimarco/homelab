@@ -6,6 +6,7 @@ resources:
   - cert-manager
   - metallb
   - nginx
+  - traefik
   - external-dns
   - metrics-server
   - goldilocks

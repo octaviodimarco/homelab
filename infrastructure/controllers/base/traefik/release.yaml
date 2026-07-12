@@ -1,0 +1,63 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: traefik
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+      version: "41.0.2" # Traefik v3.7.6
+  values:
+    deployment:
+      replicas: 1
+
+    # Mismo patron que nginx: corre en el nodo de networking via toleration
+    tolerations:
+      - key: networking-only
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: networking-only
+        operator: Equal
+        value: "true"
+        effect: NoExecute
+
+    service:
+      spec:
+        # IP libre del pool de MetalLB; .240 queda en nginx hasta el cutover
+        loadBalancerIP: 192.168.1.241
+
+    ports:
+      web:
+        # Redirect global 80 -> 443 (nginx lo hacia por defecto con TLS)
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https
+            permanent: true
+
+    ingressClass:
+      enabled: true
+      # nginx sigue siendo la class por defecto implicita durante la migracion
+      isDefaultClass: false
+
+    providers:
+      kubernetesIngress:
+        enabled: true
+        # Publica la IP del LB en el status de los Ingress
+        publishedService:
+          enabled: true
+
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
