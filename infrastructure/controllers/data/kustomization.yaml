@@ -6,4 +6,5 @@ resources:
   - csi-driver-nfs
   - metallb
   - external-dns
+  - metrics-server
   - goldilocks
