@@ -1,0 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: goldilocks-cnpg-clusters
+rules:
+  # Goldilocks necesita resolver el controller padre (Cluster CNPG) de cada pod,
+  # y el VPA recommender necesita el sub-recurso scale (CNPG >= 1.30) para
+  # emparejar pods con su Cluster.
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources: ["clusters", "clusters/scale", "clusters/status"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: goldilocks-cnpg-clusters
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: goldilocks-cnpg-clusters
+subjects:
+  - kind: ServiceAccount
+    name: goldilocks-controller
+    namespace: goldilocks
+  - kind: ServiceAccount
+    name: goldilocks-vpa-recommender
+    namespace: goldilocks
