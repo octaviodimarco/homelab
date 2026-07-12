@@ -41,8 +41,8 @@ spec:
 
     service:
       spec:
-        # IP libre del pool de MetalLB; .240 queda en nginx hasta el cutover
-        loadBalancerIP: 192.168.1.241
+        # IP publica del router port-forward, tomada de nginx en el cutover
+        loadBalancerIP: 192.168.1.240
 
     ports:
       web:
@@ -53,6 +53,13 @@ spec:
               to: websecure
               scheme: https
               permanent: true
+      websecure:
+        transport:
+          respondingTimeouts:
+            # El default de v3 (60s) corta uploads largos (immich) y
+            # streams (jellyfin); espeja el proxy-*-timeout 3600 de nginx
+            readTimeout: 3600
+            idleTimeout: 3600
 
     ingressClass:
       enabled: true

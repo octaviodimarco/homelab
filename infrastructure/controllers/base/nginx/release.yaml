@@ -26,7 +26,9 @@ spec:
           value: "true"
           effect: NoExecute
       service:
-        loadBalancerIP: 192.168.1.240
+        # Cedio .240 a traefik en el cutover; queda en .242 como fallback
+        # hasta el decomiso definitivo
+        loadBalancerIP: 192.168.1.242
       admissionWebhooks:
         enabled: true
         patch:
