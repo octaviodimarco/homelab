@@ -36,11 +36,12 @@ spec:
     ports:
       web:
         # Redirect global 80 -> 443 (nginx lo hacia por defecto con TLS)
-        redirections:
-          entryPoint:
-            to: websecure
-            scheme: https
-            permanent: true
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+              permanent: true
 
     ingressClass:
       enabled: true
