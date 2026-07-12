@@ -15,7 +15,7 @@ spec:
       version: "41.0.2" # Traefik v3.7.6
   values:
     deployment:
-      replicas: 1
+      replicas: 3
 
     # Mismo patron que nginx: corre en el nodo de networking via toleration
     tolerations:
