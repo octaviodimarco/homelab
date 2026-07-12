@@ -20,6 +20,16 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
       options:
         - "-c shared_preload_libraries=pg_stat_statements"
+  # El usuario de aplicacion lo crea CNPG en vez del server de Sparky,
+  # que requeriria CREATEROLE sobre el owner (si el rol ya existe, el
+  # server se salta el CREATE ROLE y solo aplica los GRANTs)
+  managed:
+    roles:
+      - name: sparkyapp
+        ensure: present
+        login: true
+        passwordSecret:
+          name: sparky-app-db-credentials
   monitoring:
     enablePodMonitor: true
 ---

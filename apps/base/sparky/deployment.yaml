@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sparky-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sparky-server
+  template:
+    metadata:
+      labels:
+        app: sparky-server
+    spec:
+      containers:
+        - name: sparky-server
+          image: codewithcj/sparkyfitness_server:v0.17.3
+          env:
+            - name: SPARKY_FITNESS_LOG_LEVEL
+              value: "INFO"
+            # Usuario "system" (owner del DB): corre migraciones y grants
+            - name: SPARKY_FITNESS_DB_HOST
+              value: "sparky-db-rw"
+            - name: SPARKY_FITNESS_DB_PORT
+              value: "5432"
+            - name: SPARKY_FITNESS_DB_NAME
+              value: "sparkyfitness_db"
+            - name: SPARKY_FITNESS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sparky-db-credentials
+                  key: username
+            - name: SPARKY_FITNESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sparky-db-credentials
+                  key: password
+            # Usuario de aplicación (permisos restringidos), lo gestiona CNPG
+            # via managed.roles asi el server no necesita CREATEROLE
+            - name: SPARKY_FITNESS_APP_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sparky-app-db-credentials
+                  key: username
+            - name: SPARKY_FITNESS_APP_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sparky-app-db-credentials
+                  key: password
+            - name: SPARKY_FITNESS_FRONTEND_URL
+              value: "https://sparky.dimarco-server.site"
+            - name: SPARKY_FITNESS_ADMIN_EMAIL
+              value: "octa.dimarco@gmail.com"
+            # Dejar en "false" hasta que los dos usuarios esten registrados
+            - name: SPARKY_FITNESS_DISABLE_SIGNUP
+              value: "false"
+          envFrom:
+            - secretRef:
+                name: sparky-secrets
+
+          ports:
+            - containerPort: 3010
+              name: http
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          volumeMounts:
+            - mountPath: /app/SparkyFitnessServer/uploads
+              name: data
+              subPath: uploads
+            - mountPath: /app/SparkyFitnessServer/backup
+              name: data
+              subPath: backup
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: sparky-server-data-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sparky-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sparky-frontend
+  template:
+    metadata:
+      labels:
+        app: sparky-frontend
+    spec:
+      containers:
+        - name: sparky-frontend
+          image: codewithcj/sparkyfitness:v0.17.3
+          env:
+            - name: SPARKY_FITNESS_FRONTEND_URL
+              value: "https://sparky.dimarco-server.site"
+            # Nginx del frontend proxea las llamadas de API hacia el server
+            - name: SPARKY_FITNESS_SERVER_HOST
+              value: "sparky-server"
+            - name: SPARKY_FITNESS_SERVER_PORT
+              value: "3010"
+
+          ports:
+            - containerPort: 80
+              name: http
+
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
