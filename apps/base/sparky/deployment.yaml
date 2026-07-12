@@ -19,8 +19,9 @@ spec:
             - name: SPARKY_FITNESS_LOG_LEVEL
               value: "INFO"
             # Usuario "system" (owner del DB): corre migraciones y grants
+            # CNPG corre en el cluster "data", se accede via LoadBalancer
             - name: SPARKY_FITNESS_DB_HOST
-              value: "sparky-db-rw"
+              value: "pg-sparky.data.dimarco-server.site"
             - name: SPARKY_FITNESS_DB_PORT
               value: "5432"
             - name: SPARKY_FITNESS_DB_NAME
