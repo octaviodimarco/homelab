@@ -14,6 +14,10 @@ spec:
       labels:
         app: jellyfin
     spec:
+      # iGPU QuickSync (/dev/dri) vive en el control-plane (neo50q).
+      # Sin esto el scheduler puede colocarlo en el worker y perder HW accel.
+      nodeSelector:
+        kubernetes.io/hostname: k3s-nixos-apps-control
       initContainers:
         - name: enable-legacy-auth
           image: busybox:latest
