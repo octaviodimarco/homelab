@@ -5,6 +5,10 @@ metadata:
   # labels:
   #   app: linkding
 spec:
+  # Recreate: la data es SQLite en NFS con local_lock — nunca debe
+  # haber dos pods con la DB abierta a la vez
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
