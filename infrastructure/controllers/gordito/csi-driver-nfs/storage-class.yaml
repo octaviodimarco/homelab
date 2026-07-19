@@ -15,6 +15,8 @@ mountOptions:
   # multiple TCP connections to the NAS per mount
   - nconnect=4
   # resolve flock/POSIX locks on the client instead of over NFS.
-  # Safe here because every PVC of this class is RWO with a single pod
-  # (SQLite configs). Do NOT reuse this class for multi-writer volumes.
+  # Safe for the current consumers: config PVCs are RWO single-pod
+  # (SQLite), and tdarr-cache (the one RWX PVC) does not coordinate
+  # writers via file locks. Do NOT add consumers that rely on
+  # cross-node file locking.
   - local_lock=all
