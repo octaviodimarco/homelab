@@ -10,13 +10,16 @@ reclaimPolicy: Delete
 volumeBindingMode: Immediate
 allowVolumeExpansion: true
 mountOptions:
-  - nfsvers=4
-  - noatime
-  # multiple TCP connections to the NAS per mount
-  - nconnect=4
-  # resolve flock/POSIX locks on the client instead of over NFS.
+  # NFSv3 on purpose: local_lock only works on v2/v3 — NFSv4 silently
+  # ignores it (verified 2026-07-19: CSI passed local_lock=all, kernel
+  # mounted with local_lock=none). v3 + local_lock=all is the standard
+  # recipe for SQLite-on-NFS: flock/POSIX locks resolved on the client.
   # Safe for the current consumers: config PVCs are RWO single-pod
   # (SQLite), and tdarr-cache (the one RWX PVC) does not coordinate
   # writers via file locks. Do NOT add consumers that rely on
   # cross-node file locking.
+  - nfsvers=3
   - local_lock=all
+  - noatime
+  # multiple TCP connections to the NAS per mount
+  - nconnect=4
