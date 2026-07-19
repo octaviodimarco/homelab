@@ -8,6 +8,13 @@ spec:
     storage: 2Ti
   accessModes:
     - ReadWriteMany
+  # Keep these options identical across every PV of this NFS export:
+  # mounts of the same export share the kernel superblock, so the first
+  # mount's options win on each node.
+  mountOptions:
+    - nfsvers=4
+    - noatime
+    - nconnect=8
   nfs:
     server: 192.168.1.79
     path: "/volume1/Proxmox/Media/immich"

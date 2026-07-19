@@ -1,0 +1,20 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 192.168.1.79
+  share: /volume1/Proxmox/k8s
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+mountOptions:
+  - nfsvers=4
+  - noatime
+  # multiple TCP connections to the NAS per mount
+  - nconnect=4
+  # resolve flock/POSIX locks on the client instead of over NFS.
+  # Safe here because every PVC of this class is RWO with a single pod
+  # (SQLite configs). Do NOT reuse this class for multi-writer volumes.
+  - local_lock=all
