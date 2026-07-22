@@ -26,6 +26,13 @@ spec:
           envFrom:
             - secretRef:
                 name: ddns-updater-secret
+          resources:
+            requests:
+              memory: "112Mi"
+              cpu: "15m"
+            limits:
+              memory: "224Mi"
+              cpu: "50m"
       restartPolicy: Always
       # volumes:
       #   - name: config

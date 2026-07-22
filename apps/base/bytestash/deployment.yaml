@@ -30,6 +30,13 @@ spec:
           envFrom:
             - secretRef:
                 name: bytestash-secret
+          resources:
+            requests:
+              memory: "112Mi"
+              cpu: "15m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
           volumeMounts:
             - mountPath: /data/snippets
               name: data

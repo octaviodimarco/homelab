@@ -102,8 +102,8 @@ spec:
             successThreshold: 1
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "500m"
+              memory: "1700Mi"
+              cpu: "50m"
             limits:
               memory: "4Gi"
               cpu: "2000m"

@@ -27,6 +27,13 @@ spec:
               value: "https://dbgate.dimarco-server.site"
             - name: DBGATE_SERVER_PORT
               value: "3000"
+          resources:
+            requests:
+              memory: "112Mi"
+              cpu: "15m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
           volumeMounts:
             - mountPath: /dbgate/data
               name: data
