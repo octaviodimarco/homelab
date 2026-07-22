@@ -26,7 +26,7 @@ spec:
             - -c
             - |
               CONFIG_FILE="/config/config/system.xml"
-              
+
               # Wait for config directory to be available
               MAX_WAIT=120
               WAIT_COUNT=0
@@ -35,16 +35,16 @@ spec:
                 sleep 5
                 WAIT_COUNT=$((WAIT_COUNT + 5))
               done
-              
+
               if [ ! -f "$CONFIG_FILE" ]; then
                 echo "WARNING: system.xml not found. Jellyfin will create it on first start."
                 echo "The EnableLegacyAuthorization setting will need to be applied after first start."
                 exit 0
               fi
-              
+
               # Backup original config
               cp "$CONFIG_FILE" "$CONFIG_FILE.backup.$(date +%s)" || true
-              
+
               # Replace EnableLegacyAuthorization if it exists
               if grep -q "<EnableLegacyAuthorization>" "$CONFIG_FILE"; then
                 sed -i 's/<EnableLegacyAuthorization>.*<\/EnableLegacyAuthorization>/<EnableLegacyAuthorization>true<\/EnableLegacyAuthorization>/' "$CONFIG_FILE"
@@ -53,7 +53,7 @@ spec:
                 echo "WARNING: EnableLegacyAuthorization tag not found in system.xml"
                 echo "The file may need to be edited manually or Jellyfin needs to initialize first."
               fi
-              
+
               # Verify the change
               if grep -q "<EnableLegacyAuthorization>true</EnableLegacyAuthorization>" "$CONFIG_FILE"; then
                 echo "SUCCESS: EnableLegacyAuthorization is set to true"
@@ -102,8 +102,8 @@ spec:
             successThreshold: 1
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "500m"
+              memory: "1700Mi"
+              cpu: "50m"
             limits:
               memory: "4Gi"
               cpu: "2000m"

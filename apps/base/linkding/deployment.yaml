@@ -33,6 +33,13 @@ spec:
                 name: linkding-config-postgres
             - secretRef:
                 name: linkding-db-secret
+          resources:
+            requests:
+              memory: "240Mi"
+              cpu: "15m"
+            limits:
+              memory: "480Mi"
+              cpu: "50m"
       restartPolicy: Always
       volumes:
         - name: data

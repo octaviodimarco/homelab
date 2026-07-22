@@ -65,10 +65,10 @@ spec:
 
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "368Mi"
+              cpu: "15m"
             limits:
-              memory: "512Mi"
+              memory: "768Mi"
               cpu: "500m"
 
           volumeMounts:
@@ -116,8 +116,8 @@ spec:
 
           resources:
             requests:
-              memory: "32Mi"
-              cpu: "10m"
+              memory: "100Mi"
+              cpu: "15m"
             limits:
-              memory: "128Mi"
+              memory: "200Mi"
               cpu: "100m"
