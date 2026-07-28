@@ -8,7 +8,8 @@ resources:
   - memos
   - bytestash
   - immich
-  - sparky
+  # - sparky
   # - ollama
   # - redlib  # Disabled: Reddit is blocking OAuth client creation
   - dbgate
+  - opengym
