@@ -12,3 +12,4 @@ resources:
   # - ollama
   # - redlib  # Disabled: Reddit is blocking OAuth client creation
   - dbgate
+  - opengym

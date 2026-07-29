@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opengym-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opengym-web
+  template:
+    metadata:
+      labels:
+        app: opengym-web
+    spec:
+      initContainers:
+        - name: media-init
+          image: alpine/git
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              mkdir -p /media/img /media/gif
+              if [ -z "$(ls -A /media/img 2>/dev/null)" ]; then
+                echo "Downloading exercise media (~140MB, one time)..."
+                git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds
+                cp /tmp/ds/images/*.jpg /media/img/
+                cp /tmp/ds/videos/*.gif /media/gif/
+                echo "Exercise media ready."
+              else
+                echo "Exercise media already present, skipping download."
+              fi
+          volumeMounts:
+            - mountPath: /media
+              name: media
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+      containers:
+        - name: web
+          image: ghcr.io/duartesantos8/opengym-web:latest
+          ports:
+            - containerPort: 80
+              name: http
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "15m"
+            limits:
+              memory: "128Mi"
+              cpu: "150m"
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/img
+              name: media
+              subPath: img
+              readOnly: true
+            - mountPath: /usr/share/nginx/html/gif
+              name: media
+              subPath: gif
+              readOnly: true
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: opengym-media-pvc

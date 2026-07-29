@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opengym-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opengym-api
+  template:
+    metadata:
+      labels:
+        app: opengym-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/duartesantos8/opengym-api:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DATA_DIR
+              value: "/data"
+            - name: RP_ID
+              value: "opengym.dimarco-server.site"
+            - name: ORIGIN
+              value: "https://opengym.dimarco-server.site"
+            - name: RP_NAME
+              value: "openGym"
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: opengym-data-pvc
