@@ -22,7 +22,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v3.0.3
+              tag: v3.1.0
             env:
               DB_HOSTNAME: pg-immich.data.dimarco-server.site
               DB_PORT: "5432"
