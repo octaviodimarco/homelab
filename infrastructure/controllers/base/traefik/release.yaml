@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: traefik
         namespace: flux-system
-      version: "41.0.2" # Traefik v3.7.6
+      version: "41.1.0" # Traefik v3.7.6
   values:
     deployment:
       replicas: 3
