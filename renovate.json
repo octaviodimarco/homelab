@@ -1,39 +1,40 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "includePaths": [
     "apps/**",
     "infrastructure/**",
     "monitoring/**",
     "databases/**"
   ],
-  "enabledManagers": ["flux", "kubernetes", "regex"],
+  "enabledManagers": ["flux", "kubernetes","custom.regex"],
   "kubernetes": {
-    "fileMatch": ["\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/\\.ya?ml$/"
+    ]
   },
   "flux": {
-    "fileMatch": ["\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/\\.ya?ml$/"
+    ]
   },
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": ["\\.ya?ml$"],
-      "matchStrings": [
-        "(image|repository):\\s*(?<depName>[^:@\\s]+):(?<currentValue>[^\\s@]+)\\s"
-      ],
+      "customType": "regex",
+      "managerFilePatterns": ["/\\.ya?ml$/"],
+      "matchStrings": ["(image|repository):\\s*(?<depName>[^:@\\s]+):(?<currentValue>[^\\s@]+)\\s"],
       "datasourceTemplate": "docker"
     },
     {
-      "fileMatch": ["\\.ya?ml$"],
-      "matchStrings": [
-        "(image|repository):\\s*(?<depName>[^:@\\s]+)@(?<currentValue>[^\\s]+)\\s"
-      ],
+      "customType": "regex",
+      "managerFilePatterns": ["/\\.ya?ml$/"],
+      "matchStrings": ["(image|repository):\\s*(?<depName>[^:@\\s]+)@(?<currentValue>[^\\s]+)\\s"],
       "datasourceTemplate": "docker"
     },
     {
-      "fileMatch": ["\\.ya?ml$"],
-      "matchStrings": [
-        "chart:\\s*(?<depName>[^\\s:]+)/(?<packageName>[^\\s:]+)[\\s\\n]+version:\\s*(?<currentValue>[^\\s@]+)"
-      ],
+      "customType": "regex",
+      "managerFilePatterns": ["/\\.ya?ml$/"],
+      "matchStrings": ["chart:\\s*(?<depName>[^\\s:]+)/(?<packageName>[^\\s:]+)[\\s\\n]+version:\\s*(?<currentValue>[^\\s@]+)"],
       "datasourceTemplate": "helm"
     }
   ],
@@ -50,7 +51,7 @@
     },
     {
       "description": "Agrupar todas las actualizaciones de imágenes Docker",
-      "matchManagers": ["regex", "kubernetes"],
+      "matchManagers": ["custom.regex",  "kubernetes"],
       "groupName": "Docker Images"
     }
   ]
