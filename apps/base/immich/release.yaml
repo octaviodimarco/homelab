@@ -50,7 +50,7 @@ spec:
               IMMICH_MACHINE_LEARNING_ENABLED: "false"
             resources:
               requests:
-                memory: 1280Mi
+                memory: 1152Mi
                 cpu: 50m
               limits:
                 memory: 2.5Gi
