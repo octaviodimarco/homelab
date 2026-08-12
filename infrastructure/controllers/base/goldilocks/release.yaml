@@ -24,6 +24,16 @@ spec:
       enabled: true
       updater:
         enabled: false
+      recommender:
+        resources:
+          requests:
+            cpu: 25m
+            memory: 128Mi
+      admissionController:
+        resources:
+          requests:
+            cpu: 15m
+            memory: 64Mi
 
     metrics-server:
       enabled: false
@@ -33,8 +43,8 @@ spec:
         on-by-default: false
       resources:
         requests:
-          cpu: 25m
-          memory: 256Mi
+          cpu: 15m
+          memory: 64Mi
 
     dashboard:
       replicaCount: 1
@@ -42,5 +52,5 @@ spec:
         on-by-default: false
       resources:
         requests:
-          cpu: 25m
-          memory: 256Mi
+          cpu: 15m
+          memory: 64Mi
