@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: sparky-server
-          image: codewithcj/sparkyfitness_server:v1.6.3
+          image: codewithcj/sparkyfitness_server:v1.6.4
           env:
             - name: SPARKY_FITNESS_LOG_LEVEL
               value: "INFO"
@@ -100,7 +100,7 @@ spec:
     spec:
       containers:
         - name: sparky-frontend
-          image: codewithcj/sparkyfitness:v1.6.3
+          image: codewithcj/sparkyfitness:v1.6.4
           env:
             - name: SPARKY_FITNESS_FRONTEND_URL
               value: "https://sparky.dimarco-server.site"
