@@ -47,7 +47,7 @@
     {
       "description": "Agrupar todas las actualizaciones de Flux (HelmRelease, GitRepository)",
       "matchManagers": ["flux"],
-      "groupName": "Flux Sources & Releases"
+      "groupName": "Flux Resources"
     },
     {
       "description": "Agrupar todas las actualizaciones de imágenes Docker",
