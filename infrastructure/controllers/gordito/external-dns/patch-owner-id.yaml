@@ -12,6 +12,7 @@ data:
       - "tarbi.app"
     extraArgs:
       - --annotation-filter=external-dns.kubernetes.io/managed=true
+      - --annotation-prefix=external-dns.alpha.kubernetes.io/
     txtOwnerId: "k8s-gordito-cluster"
     env:
       - name: CF_API_TOKEN
