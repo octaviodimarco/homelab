@@ -1,0 +1,17 @@
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-completed-jobs
+spec:
+  schedule: "0 * * * *"
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        resources: ["jobs"]
+        scope: Namespaced
+  conditions:
+    - name: is-complete-and-stale
+      expression: >-
+        object.status.conditions.exists(c, c.type == 'Complete' && c.status == 'True') &&
+        time.now() - timestamp(object.metadata.creationTimestamp) > duration("24h")

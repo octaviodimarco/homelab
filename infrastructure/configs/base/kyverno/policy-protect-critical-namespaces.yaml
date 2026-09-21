@@ -1,0 +1,48 @@
+# Namespace list is manual: add the name here whenever a new infra
+# controller is added under infrastructure/controllers/base/.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: prevent-deletion-of-important-namespaces
+  annotations:
+    policies.kyverno.io/title: Prevent Deletion of Important Namespaces
+    policies.kyverno.io/category: Multi-Tenancy
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Namespace
+spec:
+  background: false
+  rules:
+    - name: block-deletion
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      preconditions:
+        all:
+          - key: "{{ request.operation }}"
+            operator: Equals
+            value: DELETE
+      validate:
+        failureAction: Audit
+        message: "Deleting this namespace is not allowed: it hosts cluster-critical or infrastructure workloads."
+        deny:
+          conditions:
+            all:
+              - key: "{{ request.oldObject.metadata.name }}"
+                operator: In
+                value:
+                  - kube-system
+                  - kube-public
+                  - kube-node-lease
+                  - flux-system
+                  - kyverno
+                  - cert-manager
+                  - metallb-system
+                  - external-secrets
+                  - nginx
+                  - traefik
+                  - external-dns
+                  - metrics-server
+                  - goldilocks
+                  - csi-driver-nfs

@@ -12,3 +12,10 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
+  - name: kyverno-grafana-dashboard
+    files:
+      - kyverno.json=dashboards/kyverno.json
+    options:
+      disableNameSuffixHash: true
+      labels:
+        grafana_dashboard: "1"

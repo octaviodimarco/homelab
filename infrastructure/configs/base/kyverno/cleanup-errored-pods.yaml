@@ -1,0 +1,17 @@
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-errored-pods
+spec:
+  schedule: "0 * * * *"
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+        scope: Namespaced
+  conditions:
+    - name: is-failed-and-stale
+      expression: >-
+        object.status.phase == 'Failed' &&
+        time.now() - timestamp(object.metadata.creationTimestamp) > duration("24h")
