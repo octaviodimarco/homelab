@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - policy-disallow-latest-tag.yaml
+  - policy-disallow-default-namespace.yaml
+  - policy-protect-critical-namespaces.yaml
+  - policy-require-requests-limits.yaml
+  - policy-unique-ingress-host-and-path.yaml
+  - cleanup-errored-pods.yaml
+  - cleanup-completed-pods.yaml
+  - cleanup-failed-jobs.yaml
+  - cleanup-completed-jobs.yaml

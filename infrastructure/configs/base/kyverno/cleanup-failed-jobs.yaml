@@ -1,0 +1,17 @@
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-failed-jobs
+spec:
+  schedule: "0 * * * *"
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        resources: ["jobs"]
+        scope: Namespaced
+  conditions:
+    - name: is-failed-and-stale
+      expression: >-
+        object.status.conditions.exists(c, c.type == 'Failed' && c.status == 'True') &&
+        time.now() - timestamp(object.metadata.creationTimestamp) > duration("24h")
