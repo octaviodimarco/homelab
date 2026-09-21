@@ -10,3 +10,4 @@ resources:
   - external-dns
   - metrics-server
   - goldilocks
+  - kyverno
