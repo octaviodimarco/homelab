@@ -19,3 +19,10 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
+  - name: vpa-recommendations-grafana-dashboard
+    files:
+      - vpa-recommendations.json=dashboards/vpa-recommendations.json
+    options:
+      disableNameSuffixHash: true
+      labels:
+        grafana_dashboard: "1"
