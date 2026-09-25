@@ -10,6 +10,6 @@ resources:
   - immich
   # - sparky
   # - ollama
-  # - redlib  # Disabled: Reddit is blocking OAuth client creation
+  - redlib
   - dbgate
   - zot-proxmox

@@ -14,7 +14,9 @@ spec:
     spec:
       containers:
         - name: redlib
-          image: quay.io/redlib/redlib:latest
+          # fork building from chowder/redlib (feature/tls-openssl) to work around
+          # Reddit blocking the official OAuth client, see redlib-org/redlib#485
+          image: ghcr.io/cycneuramus/containers:redlib@sha256:4b607fd58f2c170d9bbf073bfedbe570c5b6f29c7e72b3a2285e86d5c7f98af9
           ports:
             - containerPort: 8080
               name: http
