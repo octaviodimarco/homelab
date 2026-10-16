@@ -10,6 +10,6 @@ resources:
   - immich
   # - sparky
   # - ollama
-  - redlib
+  # - redlib
   - dbgate
   - zot-proxmox
