@@ -67,7 +67,7 @@ spec:
               mountPath: /config
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:12.2
+          image: jellyfin/jellyfin:12.3
           securityContext:
             privileged: true
           ports:
