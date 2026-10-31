@@ -7,6 +7,11 @@
     "monitoring/**",
     "databases/**"
   ],
+  "ignorePaths": [
+    "apps/base/sparky/**",
+    "apps/gordito/sparky/**",
+    "databases/data/sparky/**"
+  ],
   "enabledManagers": ["flux", "kubernetes","custom.regex"],
   "kubernetes": {
     "managerFilePatterns": [
