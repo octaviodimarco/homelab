@@ -25,7 +25,8 @@ spec:
         - name: rules
           apiCall:
             urlPath: /apis/networking.k8s.io/v1/ingresses
-            jmesPath: items[].spec.rules[]
+            # Exclude the object under evaluation so it does not match itself on UPDATE
+            jmesPath: "items[?metadata.uid != '{{ request.object.metadata.uid || '' }}'].spec.rules[]"
       validate:
         failureAction: Audit
         message: "The Ingress host and path combination must be unique across the cluster."
